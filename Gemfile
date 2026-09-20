@@ -52,6 +52,21 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Rubocop Linting plugins
+  gem "rubocop-rspec"
+  gem "rubocop-factory_bot"
+
+  # For TDD
+  gem "rspec-rails"
+end
+
+group :test do
+  # for creating mock records
+  gem "factory_bot_rails"
+
+  # for tracking test coverage
+  gem "simplecov", require: false
 end
 
 group :development do
