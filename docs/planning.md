@@ -28,7 +28,9 @@ Refer: `docs/plans/set_up_view_and_controllers_for_basic_crud.md`
 
 ## 3. Style the Pages with CSS Framework
 
-TBU
+We'll pick a lightweight CSS framework that works with server-rendered Hotwire views without needing a JS build step, and apply consistent layout, table, and form styling across the employee and exchange rate pages. Getting this in early means the dashboard in step 7 can reuse the same look instead of styling being bolted on at the end.
+
+Refer: `docs/plans/style_the_pages_with_css_framework`
 
 ## 4. Implement Pagination
 

@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* Petrol & Coral tokens — docs/design_notes.md §2. One fixed theme, no dark mode.
+   Raw values live on :root; @theme inline maps them onto Tailwind utilities
+   (bg-primary, text-destructive, border-nav-border…) without baking in the hex. */
+:root {
+  --ledger-primary: #ff6f59;
+  --ledger-primary-hover: #e85742;
+  --ledger-bg: #f2f9f8;
+  --ledger-surface: #ffffff;
+  --ledger-border: #d3e6e4;
+  --ledger-text: #10292c;
+  --ledger-text-muted: #5c7c7a;
+
+  --ledger-nav-bg: #0e3b2e;
+  --ledger-nav-border: #175040;
+  --ledger-nav-text: #9fc4b8;
+  --ledger-nav-text-muted: #9fc4b8;
+  --ledger-nav-active: #eaf6f2;
+}
+
+@theme inline {
+  --color-primary: var(--ledger-primary);
+  --color-primary-hover: var(--ledger-primary-hover);
+  --color-bg: var(--ledger-bg);
+  --color-surface: var(--ledger-surface);
+  --color-border: var(--ledger-border);
+  --color-text: var(--ledger-text);
+  --color-text-muted: var(--ledger-text-muted);
+  --color-destructive: var(--ledger-primary-hover);
+
+  --color-nav-bg: var(--ledger-nav-bg);
+  --color-nav-border: var(--ledger-nav-border);
+  --color-nav-text: var(--ledger-nav-text);
+  --color-nav-text-muted: var(--ledger-nav-text-muted);
+  --color-nav-active: var(--ledger-nav-active);
+
+  /* One family throughout — no serif, no monospace (§3). */
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --breakpoint-md: 768px;
+
+  /* Scale: 12 / 14 / 16 / 20 / 24 / 32 (§3) */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+}
+
+@layer components {
+  /* Every button is icon + visible label, so the three variants differ only in
+     fill and border — primary solid, destructive outlined until hover (§4). */
+  .btn-primary {
+    @apply inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm
+           text-white transition-colors hover:bg-primary-hover
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+
+  .btn-destructive {
+    @apply inline-flex items-center gap-1.5 rounded-md border border-destructive bg-surface px-3 py-2
+           text-sm text-destructive transition-colors hover:bg-destructive hover:text-white
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-destructive;
+  }
+
+  .btn-neutral {
+    @apply inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-2
+           text-sm text-text transition-colors hover:border-primary hover:text-primary
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+
+  /* Inputs are sized to their content, not stretched to the container (§8). */
+  .field {
+    @apply rounded-md border border-border bg-surface px-2 py-1.5 text-sm text-text
+           focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary;
+  }
+
+  .field-error {
+    @apply border-destructive focus:border-destructive focus:ring-destructive;
+  }
+
+  /* Aligned digits come from tabular figures, not a second typeface (§3). */
+  .numeric {
+    @apply font-medium tabular-nums;
+  }
+
+  /* One column definition shared by an exchange rate row's display and edit
+     states, so toggling between them causes no reflow (§9). Column widths are
+     the §8 input widths plus the input's own padding and borders. */
+  .rate-row {
+    display: grid;
+    grid-template-columns: calc(4ch + 1rem + 2px) calc(12ch + 1rem + 2px) 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+}

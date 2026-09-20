@@ -1,14 +1,67 @@
-<tr id="<%= dom_id(employee) %>">
-  <td><%= employee.employee_code %></td>
-  <td><%= employee.full_name %></td>
-  <td><%= employee.job_title %></td>
-  <td><%= employee.department %></td>
-  <td><%= employee.country %></td>
-  <td><%= employee.local_salary %></td>
-  <td><%= employee.currency %></td>
-  <td>
-    <%= link_to "Edit", edit_employee_path(employee) %>
-    <%= button_to "Delete", employee_path(employee), method: :delete,
-                   data: { turbo_confirm: "Are you sure you want to delete this employee?" } %>
-  </td>
-</tr>
+<%#
+  One full-width record row: labelled fields spread across four columns on wide
+  screens and fold down to two when narrow, with the actions moving from the end
+  of the row to a footer beneath it.
+%>
+<% label_classes = "text-xs uppercase tracking-wide text-text-muted" %>
+
+<div id="<%= dom_id(employee) %>" class="flex flex-col gap-3 rounded-md border border-border bg-surface p-4 sm:flex-row sm:items-center sm:gap-6">
+  <dl class="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-4">
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Employee code</dt>
+      <dd class="py-1"><%= employee.employee_code %></dd>
+    </div>
+
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Name</dt>
+      <dd class="py-1"><%= truncated_text employee.full_name, css_class: "block" %></dd>
+    </div>
+
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Job title</dt>
+      <dd class="py-1"><%= truncated_text employee.job_title, css_class: "block" %></dd>
+    </div>
+
+    <%# Salary and currency stay one grouped, right-aligned unit at every width (§5). %>
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Salary</dt>
+      <dd class="mt-0.5 inline-block whitespace-nowrap rounded-md border border-border bg-bg px-2 py-1">
+        <span class="numeric"><%= number_with_precision employee.local_salary, precision: 2, delimiter: "," %></span><span class="numeric text-text-muted">&nbsp;<%= employee.currency %></span>
+      </dd>
+    </div>
+
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Department</dt>
+      <dd class="py-1"><%= truncated_text employee.department, css_class: "block" %></dd>
+    </div>
+
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Country</dt>
+      <dd class="py-1"><%= truncated_text employee.country, css_class: "block" %></dd>
+    </div>
+
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Created</dt>
+      <dd class="tabular-nums py-1"><%= employee.created_at.strftime("%d %b %Y, %H:%M") %></dd>
+    </div>
+
+    <div class="min-w-0">
+      <dt class="<%= label_classes %>">Updated</dt>
+      <dd class="tabular-nums py-1"><%= employee.updated_at.strftime("%d %b %Y, %H:%M") %></dd>
+    </div>
+  </dl>
+
+  <%# Side by side in the narrow footer; stacked and equal width once they sit
+      beside the field grid, so they line up with its two rows. %>
+  <div class="flex flex-wrap items-center justify-end gap-2 border-t border-border pt-3 sm:shrink-0 sm:flex-col sm:items-stretch sm:border-0 sm:pt-0">
+    <%= link_to edit_employee_path(employee), class: "btn-neutral justify-center" do %>
+      <%= icon_label "pencil", "Edit" %>
+    <% end %>
+
+    <%= button_to employee_path(employee), method: :delete, class: "btn-destructive w-full justify-center",
+                  form: { class: "flex" },
+                  data: { turbo_confirm: "Are you sure you want to delete this employee?" } do %>
+      <%= icon_label "trash_2", "Delete" %>
+    <% end %>
+  </div>
+</div>

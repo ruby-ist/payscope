@@ -18,14 +18,31 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= render "shared/flash" %>
+  <body class="min-h-screen bg-bg font-sans text-base text-text">
+    <header class="border-b border-nav-border bg-nav-bg">
+      <nav class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-6">
+        <%= link_to root_path, class: "mr-8 flex items-center" do %>
+          <%= image_tag "logo.svg", alt: "Payscope", class: "h-8 w-auto" %>
+        <% end %>
+        <%= nav_link_to "Employees", employees_path, "employees" %>
+        <%= nav_link_to "Exchange Rates", exchange_rates_path, "exchange_rates" %>
+      </nav>
+    </header>
 
-    <%= yield %>
+    <main class="mx-auto max-w-7xl px-4 py-6">
+      <%= render "shared/flash" %>
+
+      <%= yield %>
+    </main>
   </body>
 </html>

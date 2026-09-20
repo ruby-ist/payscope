@@ -1,21 +1,54 @@
-<h1>Employees</h1>
+<div data-controller="drawer">
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-2xl font-semibold text-nav-bg">Employees</h1>
 
-<%= link_to "New Employee", new_employee_path %>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" class="btn-neutral md:hidden" data-action="drawer#open">
+        <%= icon_label "sliders_horizontal", "Filter" %>
+      </button>
 
-<table>
-  <thead>
-    <tr>
-      <th>Employee Code</th>
-      <th>Full Name</th>
-      <th>Job Title</th>
-      <th>Department</th>
-      <th>Country</th>
-      <th>Local Salary</th>
-      <th>Currency</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="employees">
-    <%= render @employees %>
-  </tbody>
-</table>
+      <%= link_to new_employee_path, class: "btn-primary" do %>
+        <%= icon_label "plus_circle", "New employee" %>
+      <% end %>
+    </div>
+  </div>
+
+  <%= render "shared/aggregate_bar" %>
+
+  <div class="md:grid md:grid-cols-[16rem_minmax(0,1fr)] md:items-start md:gap-6">
+    <aside class="hidden rounded-md border border-border bg-surface p-4 md:block">
+      <h2 class="text-lg font-semibold text-nav-bg">Filters</h2>
+      <%# filters: Step 5 %>
+    </aside>
+
+    <section>
+      <div id="employees" class="flex flex-col gap-3">
+        <%= render @employees %>
+      </div>
+
+      <% if @employees.empty? %>
+        <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
+          No employees yet.
+        </p>
+      <% end %>
+    </section>
+  </div>
+
+  <%# Mobile filter drawer — container and toggle behaviour only; fields land in Step 5. %>
+  <div data-drawer-target="panel" class="hidden md:hidden">
+    <div class="fixed inset-0 z-40 bg-text/40" data-action="click->drawer#close"></div>
+
+    <div class="fixed inset-y-0 left-0 z-50 flex w-80 max-w-full flex-col border-r border-border bg-surface">
+      <div class="flex items-center justify-between border-b border-border px-4 py-3">
+        <h2 class="text-lg font-semibold text-nav-bg">Filters</h2>
+        <button type="button" class="btn-neutral" data-action="drawer#close">
+          <%= icon_label "x", "Close" %>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-4 py-4">
+        <%# filters: Step 5 %>
+      </div>
+    </div>
+  </div>
+</div>
