@@ -1,0 +1,14 @@
+<tr id="<%= dom_id(employee) %>">
+  <td><%= employee.employee_code %></td>
+  <td><%= employee.full_name %></td>
+  <td><%= employee.job_title %></td>
+  <td><%= employee.department %></td>
+  <td><%= employee.country %></td>
+  <td><%= employee.local_salary %></td>
+  <td><%= employee.currency %></td>
+  <td>
+    <%= link_to "Edit", edit_employee_path(employee) %>
+    <%= button_to "Delete", employee_path(employee), method: :delete,
+                   data: { turbo_confirm: "Are you sure you want to delete this employee?" } %>
+  </td>
+</tr>

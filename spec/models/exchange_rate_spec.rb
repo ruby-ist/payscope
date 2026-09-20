@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ExchangeRate, type: :model do
+RSpec.describe ExchangeRate do
   let(:exchange_rate) { build(:exchange_rate) }
 
   describe 'currency validations' do

@@ -1,0 +1,51 @@
+<%= form_with model: employee do |form| %>
+  <% if employee.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(employee.errors.count, "error") %> prohibited this employee from being saved:</h2>
+      <ul>
+        <% employee.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :employee_code %>
+    <%= form.text_field :employee_code %>
+  </div>
+
+  <div>
+    <%= form.label :full_name %>
+    <%= form.text_field :full_name %>
+  </div>
+
+  <div>
+    <%= form.label :job_title %>
+    <%= form.text_field :job_title %>
+  </div>
+
+  <div>
+    <%= form.label :department %>
+    <%= form.text_field :department %>
+  </div>
+
+  <div>
+    <%= form.label :country %>
+    <%= form.text_field :country %>
+  </div>
+
+  <div>
+    <%= form.label :local_salary %>
+    <%= form.number_field :local_salary, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :exchange_rate_id, "Currency" %>
+    <%= form.collection_select :exchange_rate_id, ExchangeRate.all, :id, :currency %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

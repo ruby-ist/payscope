@@ -1,0 +1,7 @@
+<li>
+  <span><%= exchange_rate.currency %></span>
+  <span><%= exchange_rate.rate %></span>
+  <%= link_to "Edit", edit_exchange_rate_path(exchange_rate) %>
+  <%= button_to "Delete", exchange_rate_path(exchange_rate), method: :delete,
+                 data: { turbo_confirm: "Deleting this rate may affect employees using it. Are you sure?" } %>
+</li>

@@ -4,8 +4,8 @@ This file will contain the plans and to-do list to build this application from g
 
 To-Do:
 
-- [ ] 1. Create Tables and Models
-- [ ] 2. Set up Views and Controllers for Basic CRUD
+- [x] 1. Create Tables and Models
+- [x] 2. Set up Views and Controllers for Basic CRUD
 - [ ] 3. Style the Pages with CSS Framework
 - [ ] 4. Implement Pagination
 - [ ] 5. Implement Search Functionality and Aggregation Data Display
@@ -22,7 +22,9 @@ Refer: `docs/plans/create_tables_and_models.md`
 
 ## 2. Set up Views and Controllers for Basic CRUD
 
-TBU
+We'll build `EmployeesController` and `ExchangeRatesController` with standard CRUD actions, using Turbo Frames/Streams for edit and delete so the page doesn't do a full reload. Controllers stay thin — validation lives in the model, and filtering/aggregation logic is deferred to dedicated query objects in step 5. We'll write request tests for the happy path and validation failures before building out the views themselves.
+
+Refer: `docs/plans/set_up_view_and_controllers_for_basic_crud.md`
 
 ## 3. Style the Pages with CSS Framework
 

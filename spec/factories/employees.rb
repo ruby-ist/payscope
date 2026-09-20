@@ -6,6 +6,6 @@ FactoryBot.define do
     department { 'Engineering' }
     country { 'USA' }
     local_salary { 75_000 }
-    association :exchange_rate
+    exchange_rate
   end
 end

@@ -1,0 +1,19 @@
+<li>
+  <%= form_with model: exchange_rate do |form| %>
+    <% if exchange_rate.errors.any? %>
+      <ul>
+        <% exchange_rate.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= form.label :currency %>
+    <%= form.text_field :currency %>
+
+    <%= form.label :rate %>
+    <%= form.number_field :rate, step: "0.000001" %>
+
+    <%= form.submit %>
+  <% end %>
+</li>

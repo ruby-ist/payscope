@@ -1,0 +1,21 @@
+<h1>Employees</h1>
+
+<%= link_to "New Employee", new_employee_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Employee Code</th>
+      <th>Full Name</th>
+      <th>Job Title</th>
+      <th>Department</th>
+      <th>Country</th>
+      <th>Local Salary</th>
+      <th>Currency</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="employees">
+    <%= render @employees %>
+  </tbody>
+</table>

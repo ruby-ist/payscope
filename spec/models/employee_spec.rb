@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Employee, type: :model do
+RSpec.describe Employee do
   let(:employee) { build(:employee) }
 
   describe 'presence validations' do
