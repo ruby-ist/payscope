@@ -1,5 +1,6 @@
 <%# Styled container only — the real min/max/avg/count/sum values are Step 5's job. %>
-<div class="-mx-4 mb-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:overflow-visible md:px-0">
+<div data-aggregate-bar
+     class="-mx-4 mb-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:overflow-visible md:px-0">
   <% %w[Min Max Avg Count Sum].each do |label| %>
     <div class="min-w-32 flex-1 shrink-0 snap-start rounded-md border border-border bg-surface px-3 py-2">
       <p class="text-xs uppercase tracking-wide text-text-muted"><%= label %></p>

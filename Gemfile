@@ -18,6 +18,8 @@ gem "stimulus-rails"
 gem "jbuilder"
 # Tailwind CSS via a standalone binary, no Node/npm needed [https://github.com/rails/tailwindcss-rails]
 gem "tailwindcss-rails"
+# Pagination with no JS or CSS framework assumptions [https://github.com/ddnexus/pagy]
+gem "pagy"
 
 # See the discussuion: [https://discuss.rubyonrails.org/t/internal-server-error-500-while-going-through-guide/91629/10]
 gem "json", "< 3.0.0"

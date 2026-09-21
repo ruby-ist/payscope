@@ -2,7 +2,8 @@ class EmployeesController < ApplicationController
   before_action :set_employee, only: %i[edit update destroy]
 
   def index
-    @employees = Employee.all
+    @pagy, @employees = pagy(Employee.order(:id))
+    load_sidebar_data unless list_frame_request?
   end
 
   def new
@@ -39,6 +40,14 @@ class EmployeesController < ApplicationController
   end
 
   private
+
+  def list_frame_request?
+    turbo_frame_request_id == "employee_list"
+  end
+
+  def load_sidebar_data
+    @sidebar_data_loaded = true
+  end
 
   def set_employee
     @employee = Employee.find_by(id: params[:id])

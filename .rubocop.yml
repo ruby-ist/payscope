@@ -8,6 +8,9 @@ plugins:
 AllCops:
   NewCops: enable
 
+RSpec/NestedGroups:
+  Max: 5
+
 # Overwrite or add rules to create your own house style
 #
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`

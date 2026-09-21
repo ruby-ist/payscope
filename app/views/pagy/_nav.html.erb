@@ -1,0 +1,53 @@
+<%#
+  Pagy's nav, written in the app's own markup rather than restyling pagy's
+  default classes. Everything comes from pagy's public API: data_hash exposes
+  the page series, and page_url builds each href. Page 1 uses :first so the URL
+  drops the ?page param entirely, keeping shared links clean.
+%>
+<%
+  data = pagy.data_hash(data_keys: %i[series previous next])
+  page_link_classes = "btn-neutral min-w-9 justify-center"
+  disabled_classes = "inline-flex items-center gap-1.5 rounded-md border border-border " \
+                     "bg-surface px-3 py-2 text-sm text-text-muted"
+%>
+
+<nav class="flex flex-wrap items-center justify-center gap-2 border-t border-border px-4 py-3"
+     aria-label="Pagination">
+  <% if data[:previous] %>
+    <%= link_to pagy.page_url(data[:previous] == 1 ? :first : data[:previous]), class: "btn-neutral" do %>
+      <%= icon_label "chevron_left", "Previous" %>
+    <% end %>
+  <% else %>
+    <span class="<%= disabled_classes %>" aria-disabled="true">
+      <%= icon_label "chevron_left", "Previous" %>
+    </span>
+  <% end %>
+
+  <ol class="flex flex-wrap items-center gap-1">
+    <% data[:series].each do |item| %>
+      <li>
+        <% case item %>
+        <% when Integer %>
+          <%# An Integer is a linkable page. %>
+          <%= link_to item, pagy.page_url(item == 1 ? :first : item), class: page_link_classes %>
+        <% when String %>
+          <%# A String is the current page — pagy marks it this way, not by value. %>
+          <span class="inline-flex min-w-9 items-center justify-center rounded-md bg-primary px-3 py-2 text-sm text-white"
+                aria-current="page"><%= item %></span>
+        <% else %>
+          <span class="px-2 text-sm text-text-muted" role="separator">&hellip;</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ol>
+
+  <% if data[:next] %>
+    <%= link_to pagy.page_url(data[:next]), class: "btn-neutral" do %>
+      <%= icon_label "chevron_right", "Next" %>
+    <% end %>
+  <% else %>
+    <span class="<%= disabled_classes %>" aria-disabled="true">
+      <%= icon_label "chevron_right", "Next" %>
+    </span>
+  <% end %>
+</nav>
