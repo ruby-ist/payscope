@@ -1,15 +1,6 @@
 <%= turbo_stream.replace "flash", partial: "shared/flash" %>
 
-<% if @exchange_rate.errors.empty? %>
-  <%= turbo_stream.replace dom_id(@exchange_rate) do %>
-    <%= turbo_frame_tag dom_id(@exchange_rate) do %>
-      <%= render @exchange_rate %>
-    <% end %>
-  <% end %>
-<% else %>
-  <%= turbo_stream.replace dom_id(@exchange_rate) do %>
-    <%= turbo_frame_tag dom_id(@exchange_rate) do %>
-      <%= render "form", exchange_rate: @exchange_rate %>
-    <% end %>
-  <% end %>
-<% end %>
+<%# Success returns the row to its display state; a failure keeps it in the form
+    state so the errors stay visible. %>
+<%= turbo_stream.replace dom_id(@exchange_rate), partial: "exchange_rates/rate_frame",
+                         locals: { exchange_rate: @exchange_rate, editing: @exchange_rate.errors.any? } %>

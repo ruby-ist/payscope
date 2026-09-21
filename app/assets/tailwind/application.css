@@ -88,14 +88,23 @@
     @apply font-medium tabular-nums;
   }
 
-  /* One column definition shared by an exchange rate row's display and edit
-     states, so toggling between them causes no reflow (§9). Column widths are
-     the §8 input widths plus the input's own padding and borders. */
   .rate-row {
+    @apply flex flex-wrap items-center justify-between gap-3 px-4 py-3;
+  }
+
+  /* Reads as "1 EUR = 0.900000 USD". The columns are fixed so a row's display
+     and edit states occupy exactly the same geometry (§9) — widths are the §8
+     input widths plus the input's own padding and border. */
+  .rate-equation {
     display: grid;
-    grid-template-columns: calc(4ch + 1rem + 2px) calc(12ch + 1rem + 2px) 1fr;
+    grid-template-columns: auto calc(4ch + 1rem + 2px) auto calc(12ch + 1rem + 2px) auto;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+
+  /* Mirrors .field's box so a displayed value sits exactly where the input's
+     text sits, leaving no shift when the row toggles into edit state. */
+  .rate-value {
+    @apply rounded-md border border-transparent px-2 py-1.5;
   }
 }

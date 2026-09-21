@@ -1,0 +1,16 @@
+<%#
+  Holds either the "add" button or the new-rate form — the form is only in the
+  DOM once it has been asked for. Navigating this frame to /exchange_rates/new
+  swaps in the form; creating a rate or cancelling swaps the button back.
+%>
+<%= turbo_frame_tag "new_exchange_rate", class: "block border-t border-border" do %>
+  <% if showing_form %>
+    <%= render "form", exchange_rate: exchange_rate %>
+  <% else %>
+    <div class="rate-row">
+      <%= link_to new_exchange_rate_path, class: "btn-primary" do %>
+        <%= icon_label "plus_circle", "Add exchange rate" %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

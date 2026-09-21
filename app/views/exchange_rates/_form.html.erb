@@ -1,19 +1,40 @@
-<li>
-  <%= form_with model: exchange_rate do |form| %>
-    <% if exchange_rate.errors.any? %>
-      <ul>
-        <% exchange_rate.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<%#
+  Shares the .rate-row / .rate-equation layout with the display state, so an
+  inline edit reads as the same sentence and does not shift the row's geometry.
+  Always pre-filled from the record (§9).
+%>
+<%= form_with model: exchange_rate, class: "rate-row text-sm" do |form| %>
+  <div class="rate-equation">
+    <span class="numeric">1</span>
+
+    <%= form.text_field :currency,
+                        class: class_names("field numeric w-full", "field-error" => exchange_rate.errors[:currency].any?),
+                        aria: { label: "Currency", invalid: exchange_rate.errors[:currency].any?.presence } %>
+
+    <span class="text-text-muted mx-6">=</span>
+
+    <%= form.number_field :rate, step: "0.000001",
+                          class: class_names("field numeric w-full", "field-error" => exchange_rate.errors[:rate].any?),
+                          aria: { label: "Rate", invalid: exchange_rate.errors[:rate].any?.presence } %>
+
+    <span class="numeric text-text-muted">USD</span>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <%= form.button type: :submit, class: "btn-primary" do %>
+      <%= icon_label "check", "Save" %>
     <% end %>
 
-    <%= form.label :currency %>
-    <%= form.text_field :currency %>
+    <%# Navigating this frame to the index restores whichever state it came from:
+        a row frame returns to its display row, the new frame to its add button. %>
+    <%= link_to exchange_rates_path, class: "btn-neutral" do %>
+      <%= icon_label "x", "Cancel" %>
+    <% end %>
+  </div>
 
-    <%= form.label :rate %>
-    <%= form.number_field :rate, step: "0.000001" %>
-
-    <%= form.submit %>
+  <% if exchange_rate.errors.any? %>
+    <p class="w-full text-xs text-destructive">
+      <%= exchange_rate.errors.full_messages.join(', ') %>
+    </p>
   <% end %>
-</li>
+<% end %>

@@ -1,7 +1,21 @@
-<li>
-  <span><%= exchange_rate.currency %></span>
-  <span><%= exchange_rate.rate %></span>
-  <%= link_to "Edit", edit_exchange_rate_path(exchange_rate) %>
-  <%= button_to "Delete", exchange_rate_path(exchange_rate), method: :delete,
-                 data: { turbo_confirm: "Deleting this rate may affect employees using it. Are you sure?" } %>
-</li>
+<div class="rate-row text-sm">
+  <p class="rate-equation">
+    <span class="numeric">1</span>
+    <span class="rate-value numeric"><%= exchange_rate.currency %></span>
+    <span class="text-text-muted mx-6">=</span>
+    <span class="rate-value numeric"><%= number_with_precision exchange_rate.rate, precision: 6 %></span>
+    <span class="numeric text-text-muted">USD</span>
+  </p>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <%= link_to edit_exchange_rate_path(exchange_rate), class: "btn-neutral" do %>
+      <%= icon_label "pencil", "Edit" %>
+    <% end %>
+
+    <%= button_to exchange_rate_path(exchange_rate), method: :delete, class: "btn-destructive",
+                  form: { class: "inline-block" },
+                  data: { turbo_confirm: "Deleting this rate may affect employees using it. Are you sure?" } do %>
+      <%= icon_label "trash_2", "Delete" %>
+    <% end %>
+  </div>
+</div>

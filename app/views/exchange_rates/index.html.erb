@@ -1,17 +1,21 @@
-<h1>Exchange Rates</h1>
+<h1 class="mb-4 text-2xl font-semibold text-nav-bg">Exchange Rates</h1>
 
-<ul id="exchange_rates">
-  <% @exchange_rates.each do |exchange_rate| %>
-    <%= turbo_frame_tag dom_id(exchange_rate) do %>
-      <% if exchange_rate == @editing_exchange_rate %>
-        <%= render "form", exchange_rate: @editing_exchange_rate %>
-      <% else %>
-        <%= render exchange_rate %>
-      <% end %>
+<%# No column headers: each row reads as its own sentence, "1 EUR = 0.900000 USD". %>
+<div class="max-w-3xl overflow-hidden rounded-md border border-border bg-surface">
+  <div id="exchange_rates" class="divide-y divide-border">
+    <% @exchange_rates.each do |exchange_rate| %>
+      <% editing = exchange_rate == @editing_exchange_rate %>
+      <%# The edited row must render @editing_exchange_rate, not the member from
+          @exchange_rates: they compare equal by id, but only the former carries
+          validation errors after a failed update. %>
+      <%= render "rate_frame", exchange_rate: editing ? @editing_exchange_rate : exchange_rate,
+                               editing: editing %>
     <% end %>
-  <% end %>
-</ul>
+  </div>
 
-<%= turbo_frame_tag "new_exchange_rate" do %>
-  <%= render "form", exchange_rate: @new_exchange_rate %>
-<% end %>
+  <% if @exchange_rates.empty? %>
+    <p class="px-4 py-10 text-center text-sm text-text-muted">No exchange rates yet.</p>
+  <% end %>
+
+  <%= render "new_frame", exchange_rate: @new_exchange_rate, showing_form: @showing_new_form %>
+</div>

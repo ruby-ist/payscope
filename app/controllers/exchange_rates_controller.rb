@@ -5,6 +5,14 @@ class ExchangeRatesController < ApplicationController
     load_index
   end
 
+  # Both new and edit re-render the index with one frame switched into its form
+  # state, so the page works the same whether Turbo swaps the frame or the
+  # browser follows the link as a full navigation.
+  def new
+    load_index(showing_new_form: true)
+    render :index
+  end
+
   def edit
     load_index(editing_exchange_rate: @exchange_rate)
     render :index
@@ -21,7 +29,7 @@ class ExchangeRatesController < ApplicationController
     else
       respond_to do |format|
         format.html do
-          load_index(new_exchange_rate: @exchange_rate)
+          load_index(new_exchange_rate: @exchange_rate, showing_new_form: true)
           render :index, status: :unprocessable_entity
         end
         format.turbo_stream { render :create, status: :unprocessable_entity }
@@ -69,9 +77,10 @@ class ExchangeRatesController < ApplicationController
     params.expect(exchange_rate: %i[currency rate])
   end
 
-  def load_index(new_exchange_rate: ExchangeRate.new, editing_exchange_rate: nil)
+  def load_index(new_exchange_rate: ExchangeRate.new, editing_exchange_rate: nil, showing_new_form: false)
     @exchange_rates = ExchangeRate.all
     @new_exchange_rate = new_exchange_rate
     @editing_exchange_rate = editing_exchange_rate
+    @showing_new_form = showing_new_form
   end
 end

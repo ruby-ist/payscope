@@ -13,6 +13,48 @@ RSpec.describe ExchangeRatesController do
     it 'lists the exchange rate' do
       expect(response.body).to include(exchange_rate.currency)
     end
+
+    it 'offers the add button rather than the form' do
+      expect(response.body).to include('Add exchange rate')
+    end
+
+    it 'does not render the new rate form' do
+      expect(response.body).not_to include('name="exchange_rate[currency]"')
+    end
+  end
+
+  describe 'GET /exchange_rates/new' do
+    let!(:exchange_rate) { create(:exchange_rate) }
+
+    before { get new_exchange_rate_path }
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:ok)
+    end
+
+    it 'renders the new rate form' do
+      expect(response.body).to include('name="exchange_rate[currency]"')
+    end
+
+    it 'replaces the add button with the form' do
+      expect(response.body).not_to include('Add exchange rate')
+    end
+
+    it 'renders the form inside the new rate frame' do
+      expect(response.body).to match(/<turbo-frame[^>]*id="new_exchange_rate"/)
+    end
+
+    it 'offers a cancel action' do
+      expect(response.body).to include('Cancel')
+    end
+
+    it 'still lists the existing rates' do
+      expect(response.body).to include(exchange_rate.currency)
+    end
+
+    it 'leaves existing rows in their display state' do
+      expect(response.body).not_to include(%(value="#{exchange_rate.currency}"))
+    end
   end
 
   describe 'POST /exchange_rates' do
@@ -165,7 +207,7 @@ RSpec.describe ExchangeRatesController do
       end
 
       it 'renders the edited row inside its own turbo frame' do
-        expect(response.body).to include(%(<turbo-frame id="#{ActionView::RecordIdentifier.dom_id(exchange_rate)}">))
+        expect(response.body).to match(/<turbo-frame[^>]*id="#{ActionView::RecordIdentifier.dom_id(exchange_rate)}"/)
       end
 
       it 'renders the edited row as a prefilled form' do

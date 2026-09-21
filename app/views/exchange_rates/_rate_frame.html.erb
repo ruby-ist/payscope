@@ -1,0 +1,12 @@
+<%#
+  A row's frame, rendered identically by the index and by the create/update
+  streams so the striping and geometry can't drift between them. Striping uses
+  :nth-child so it stays correct after a row is added or removed via a stream.
+%>
+<%= turbo_frame_tag dom_id(exchange_rate), class: "block even:bg-surface-alt" do %>
+  <% if editing %>
+    <%= render "form", exchange_rate: exchange_rate %>
+  <% else %>
+    <%= render exchange_rate %>
+  <% end %>
+<% end %>

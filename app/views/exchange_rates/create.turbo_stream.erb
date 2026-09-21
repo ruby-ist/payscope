@@ -1,20 +1,13 @@
 <%= turbo_stream.replace "flash", partial: "shared/flash" %>
 
 <% if @exchange_rate.persisted? %>
-  <%= turbo_stream.append "exchange_rates" do %>
-    <%= turbo_frame_tag dom_id(@exchange_rate) do %>
-      <%= render @exchange_rate %>
-    <% end %>
-  <% end %>
-  <%= turbo_stream.replace "new_exchange_rate" do %>
-    <%= turbo_frame_tag "new_exchange_rate" do %>
-      <%= render "form", exchange_rate: ExchangeRate.new %>
-    <% end %>
-  <% end %>
+  <%= turbo_stream.append "exchange_rates", partial: "exchange_rates/rate_frame",
+                          locals: { exchange_rate: @exchange_rate, editing: false } %>
+
+  <%# Back to just the button — the form closes once the rate is saved. %>
+  <%= turbo_stream.replace "new_exchange_rate", partial: "exchange_rates/new_frame",
+                           locals: { exchange_rate: ExchangeRate.new, showing_form: false } %>
 <% else %>
-  <%= turbo_stream.replace "new_exchange_rate" do %>
-    <%= turbo_frame_tag "new_exchange_rate" do %>
-      <%= render "form", exchange_rate: @exchange_rate %>
-    <% end %>
-  <% end %>
+  <%= turbo_stream.replace "new_exchange_rate", partial: "exchange_rates/new_frame",
+                           locals: { exchange_rate: @exchange_rate, showing_form: true } %>
 <% end %>
