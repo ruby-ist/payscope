@@ -6,7 +6,7 @@ To-Do:
 
 - [x] 1. Create Tables and Models
 - [x] 2. Set up Views and Controllers for Basic CRUD
-- [ ] 3. Style the Pages with CSS Framework
+- [x] 3. Style the Pages with CSS Framework
 - [ ] 4. Implement Pagination
 - [ ] 5. Implement Search Functionality and Aggregation Data Display
 - [ ] 6. Implement the Currency Normalization Functionality
