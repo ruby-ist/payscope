@@ -5,7 +5,12 @@
 %>
 <% label_classes = "text-xs uppercase tracking-wide text-text-muted" %>
 
-<div id="<%= dom_id(employee) %>" class="flex flex-col gap-3 rounded-md border border-border bg-surface p-4 sm:flex-row sm:items-center sm:gap-6">
+<%#
+  Rows sit flush against each other: side borders plus a top border give a single
+  divider between neighbours, and only the first/last row is rounded. Striping is
+  done with :nth-child so it stays correct after a row is removed via turbo_stream.
+%>
+<div id="<%= dom_id(employee) %>" class="group flex flex-col gap-3 border-x border-t border-border bg-surface p-4 first:rounded-t-md even:bg-surface-alt last:rounded-b-md last:border-b sm:flex-row sm:items-center sm:gap-6">
   <dl class="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-4">
     <div class="min-w-0">
       <dt class="<%= label_classes %>">Employee code</dt>
@@ -25,7 +30,8 @@
     <%# Salary and currency stay one grouped, right-aligned unit at every width (§5). %>
     <div class="min-w-0">
       <dt class="<%= label_classes %>">Salary</dt>
-      <dd class="mt-0.5 inline-block whitespace-nowrap rounded-md border border-border bg-bg px-2 py-1">
+      <%# Flips to white on striped rows so the chip keeps standing off its row. %>
+      <dd class="mt-0.5 inline-block whitespace-nowrap rounded-md border border-border bg-bg px-2 py-1 group-even:bg-surface">
         <span class="numeric"><%= number_with_precision employee.local_salary, precision: 2, delimiter: "," %></span><span class="numeric text-text-muted">&nbsp;<%= employee.currency %></span>
       </dd>
     </div>

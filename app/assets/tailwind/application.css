@@ -8,6 +8,7 @@
   --ledger-primary-hover: #e85742;
   --ledger-bg: #f2f9f8;
   --ledger-surface: #ffffff;
+  --ledger-surface-alt: #f5f7f7;
   --ledger-border: #d3e6e4;
   --ledger-text: #10292c;
   --ledger-text-muted: #5c7c7a;
@@ -24,6 +25,7 @@
   --color-primary-hover: var(--ledger-primary-hover);
   --color-bg: var(--ledger-bg);
   --color-surface: var(--ledger-surface);
+  --color-surface-alt: var(--ledger-surface-alt);
   --color-border: var(--ledger-border);
   --color-text: var(--ledger-text);
   --color-text-muted: var(--ledger-text-muted);
