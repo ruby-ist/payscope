@@ -1,0 +1,23 @@
+<%#
+  Label and its inline error sit next to each other on one row, with the visual
+  and accessible cues coming from one piece of markup (docs/design_notes.md §8).
+  Only the first error is shown — the rest are noise while the field is wrong.
+%>
+<%
+  errors = form.object.errors[attribute]
+  error_id = "#{form.object_name}_#{attribute}_error"
+%>
+
+<div>
+  <div class="mb-1 flex flex-wrap items-baseline gap-x-2">
+    <%= form.label attribute, label, class: "text-sm text-text-muted" %>
+
+    <% if errors.any? %>
+      <span id="<%= error_id %>" class="text-xs text-destructive"><%= errors.first %></span>
+    <% end %>
+  </div>
+
+  <%= form.text_field attribute,
+                      class: class_names("field", width_class, "field-error" => errors.any?),
+                      aria: { invalid: errors.any?.presence, describedby: (error_id if errors.any?) } %>
+</div>

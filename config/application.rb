@@ -38,5 +38,10 @@ module Payscope
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Render invalid fields as-is. Error styling is applied in the views via a
+    # `field-error` class and an inline message, so the default wrapper div only
+    # adds a block element that changes the label's height and baseline.
+    config.action_view.field_error_proc = ->(html_tag, _instance) { html_tag }
   end
 end

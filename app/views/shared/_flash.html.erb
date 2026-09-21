@@ -1,15 +1,32 @@
-<div id="flash">
+<%#
+  Flash messages float above the page rather than sitting in the document flow,
+  so showing one never shifts the content underneath. The container stays in the
+  DOM (and keeps its id) so turbo_stream can replace it after a stream response.
+%>
+<div id="flash" role="status" aria-live="polite"
+     <%# inset-x-0 + mx-auto centres the fixed container without a transform. %>
+     class="pointer-events-none fixed inset-x-0 top-26 z-50 mx-auto flex w-80 max-w-[calc(100vw_-_2rem)] flex-col gap-2">
   <% if notice.present? %>
-    <p id="notice" class="mb-4 flex items-center gap-2 rounded-md border border-primary bg-surface px-4 py-3 text-sm text-text">
-      <%= icon "check", css_class: "size-4 shrink-0 text-primary" %>
-      <%= notice %>
-    </p>
+    <div data-controller="flash" class="pointer-events-auto flex items-start gap-2 rounded-md border border-primary bg-surface px-4 py-3 text-sm shadow-lg">
+      <%= icon "check", css_class: "mt-0.5 size-4 shrink-0 text-primary" %>
+      <p id="notice" class="flex-1"><%= notice %></p>
+
+      <button type="button" class="shrink-0 text-text-muted hover:text-text" data-action="flash#dismiss">
+        <%= icon "x" %>
+        <span class="sr-only">Close</span>
+      </button>
+    </div>
   <% end %>
 
   <% if alert.present? %>
-    <p id="alert" class="mb-4 flex items-center gap-2 rounded-md border border-destructive bg-surface px-4 py-3 text-sm text-destructive">
-      <%= icon "x" %>
-      <%= alert %>
-    </p>
+    <div data-controller="flash" class="pointer-events-auto flex items-start gap-2 rounded-md border border-destructive bg-surface px-4 py-3 text-sm shadow-lg">
+      <%= icon "x", css_class: "mt-0.5 size-4 shrink-0 text-destructive" %>
+      <p id="alert" class="flex-1 text-destructive"><%= alert %></p>
+
+      <button type="button" class="shrink-0 text-text-muted hover:text-text" data-action="flash#dismiss">
+        <%= icon "x" %>
+        <span class="sr-only">Close</span>
+      </button>
+    </div>
   <% end %>
 </div>

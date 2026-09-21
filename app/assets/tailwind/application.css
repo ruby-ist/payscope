@@ -73,13 +73,14 @@
   }
 
   /* Inputs are sized to their content, not stretched to the container (§8). */
+  /* Focus is signalled by the border colour alone — no ring or outline. */
   .field {
     @apply rounded-md border border-border bg-surface px-2 py-1.5 text-sm text-text
-           focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary;
+           focus:border-primary focus:outline-none;
   }
 
   .field-error {
-    @apply border-destructive focus:border-destructive focus:ring-destructive;
+    @apply border-destructive focus:border-destructive;
   }
 
   /* Aligned digits come from tabular figures, not a second typeface (§3). */

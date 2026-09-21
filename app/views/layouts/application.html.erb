@@ -40,9 +40,11 @@
     </header>
 
     <main class="mx-auto max-w-7xl px-4 py-6">
-      <%= render "shared/flash" %>
-
       <%= yield %>
     </main>
+
+    <%# Outside <main> so no ancestor can ever become its containing block and
+        break the fixed positioning. %>
+    <%= render "shared/flash" %>
   </body>
 </html>
