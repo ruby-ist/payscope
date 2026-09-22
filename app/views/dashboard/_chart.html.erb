@@ -1,0 +1,5 @@
+<%= turbo_frame_tag "salary_chart", class: "block h-80 p-4 md:h-96" do %>
+  <div data-controller="chart" data-chart-config-value="<%= chart_config.to_json %>"
+       class="h-full w-full" role="img"
+       aria-label="<%= aggregation.capitalize %> normalized salary by <%= group_by.humanize.downcase %>"></div>
+<% end %>

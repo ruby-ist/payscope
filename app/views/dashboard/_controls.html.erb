@@ -1,0 +1,44 @@
+<%= form_with url: dashboard_path, method: :get,
+              data: { controller: "filters", turbo_frame: "salary_chart",
+                      action: "change->filters#requestSubmit submit->filters#submit" },
+              class: "space-y-8" do %>
+  <fieldset>
+    <legend class="mb-2 text-sm uppercase tracking-wide text-text-muted">Group by</legend>
+    <div class="segmented-control">
+      <% Dashboard::Employee::SalaryReportService::GROUP_BY_COLUMNS.each do |column| %>
+        <label class="segmented-control-option">
+          <%= radio_button_tag :group_by, column, column == group_by, class: "segmented-control-input" %>
+          <%= column.humanize %>
+        </label>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend class="mb-2 text-sm uppercase tracking-wide text-text-muted">Aggregation</legend>
+    <div class="segmented-control">
+      <% Employee::SALARY_AGGREGATE_SQL.each_key do |option| %>
+        <label class="segmented-control-option">
+          <%= radio_button_tag :aggregation, option, option == aggregation, class: "segmented-control-input" %>
+          <%= option.capitalize %>
+        </label>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend class="mb-2 text-sm uppercase tracking-wide text-text-muted">Created between</legend>
+    <div class="flex flex-wrap items-center gap-3">
+      <div>
+        <%= label_tag "created_at_from", "From", class: "mb-1 block text-sm tracking-wide text-text-muted" %>
+        <%= date_field_tag "created_at[from]", from, id: "created_at_from", class: "field w-40 bg-bg",
+                           aria: { label: "Created on or after" } %>
+      </div>
+      <div>
+        <%= label_tag "created_at_to", "Till", class: "mb-1 block text-sm tracking-wide text-text-muted" %>
+        <%= date_field_tag "created_at[to]", to, id: "created_at_to", class: "field w-40 bg-bg",
+                           aria: { label: "Created on or before" } %>
+      </div>
+    </div>
+  </fieldset>
+<% end %>

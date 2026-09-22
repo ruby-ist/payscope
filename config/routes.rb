@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   resources :employees
   resources :exchange_rates
+  get "dashboard", to: "dashboard#show", as: :dashboard
 
   # Defines the root path route ("/")
   root to: "employees#index"

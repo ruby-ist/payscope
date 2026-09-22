@@ -1,4 +1,12 @@
 class Employee < ApplicationRecord
+  SALARY_AGGREGATE_SQL = {
+    "min" => "MIN(employees.normalized_usd_salary)",
+    "max" => "MAX(employees.normalized_usd_salary)",
+    "avg" => "AVG(employees.normalized_usd_salary)",
+    "sum" => "SUM(employees.normalized_usd_salary)",
+    "count" => "COUNT(*)"
+  }.freeze
+
   belongs_to :exchange_rate
   delegate :currency, to: :exchange_rate
 

@@ -107,4 +107,20 @@
   .rate-value {
     @apply rounded-md border border-transparent px-2 py-1.5;
   }
+
+  /* Real radio semantics with a visually-hidden input — pill styling comes
+     from the label via :has(:checked), not from ARIA-tab mimicry (Step 7). */
+  .segmented-control {
+    @apply inline-flex flex-wrap gap-1 rounded-md border border-border bg-bg p-1;
+  }
+
+  .segmented-control-option {
+    @apply cursor-pointer rounded px-3 py-1.5 text-sm text-text-muted transition-colors
+           hover:text-text has-checked:bg-primary has-checked:text-white
+           has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-primary;
+  }
+
+  .segmented-control-input {
+    @apply sr-only;
+  }
 }

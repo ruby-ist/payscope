@@ -14,15 +14,15 @@ RSpec.describe Employee::SalaryAggregationService do
     end
 
     it 'reports the lowest salary' do
-      expect(summary[:minimum]).to eq(50_000)
+      expect(summary[:min]).to eq(50_000)
     end
 
     it 'reports the highest salary' do
-      expect(summary[:maximum]).to eq(150_000)
+      expect(summary[:max]).to eq(150_000)
     end
 
     it 'reports the mean salary' do
-      expect(summary[:average]).to eq(100_000)
+      expect(summary[:avg]).to eq(100_000)
     end
 
     it 'reports how many employees it covers' do
@@ -30,7 +30,7 @@ RSpec.describe Employee::SalaryAggregationService do
     end
 
     it 'reports the total salary' do
-      expect(summary[:total]).to eq(300_000)
+      expect(summary[:sum]).to eq(300_000)
     end
 
     context 'when the scope is narrowed' do
@@ -41,7 +41,7 @@ RSpec.describe Employee::SalaryAggregationService do
       end
 
       it 'averages only what the scope holds' do
-        expect(summary[:average]).to eq(125_000)
+        expect(summary[:avg]).to eq(125_000)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Employee::SalaryAggregationService do
     end
 
     it 'averages only the salaries it has' do
-      expect(summary[:average]).to eq(100_000)
+      expect(summary[:avg]).to eq(100_000)
     end
   end
 
@@ -83,11 +83,11 @@ RSpec.describe Employee::SalaryAggregationService do
     end
 
     it 'reports no total' do
-      expect(summary[:total]).to be_nil
+      expect(summary[:sum]).to be_nil
     end
 
     it 'reports no average' do
-      expect(summary[:average]).to be_nil
+      expect(summary[:avg]).to be_nil
     end
   end
 end

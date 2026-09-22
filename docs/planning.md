@@ -10,7 +10,7 @@ To-Do:
 - [x] 4. Implement Pagination
 - [x] 5. Implement Search Functionality and Aggregation Data Display
 - [x] 6. Implement the Currency Normalization Functionality
-- [ ] 7. Create the Dashboard Page
+- [x] 7. Create the Dashboard Page
 - [ ] 8. Write a Script to Seed the Database
 - [ ] 9. Code Optimization and Feature Improvements
 
@@ -52,7 +52,9 @@ Refer: `docs/plans/implement_the_currency_normalization_functionality.md`
 
 ## 7. Create the Dashboard Page
 
-TBU
+One card split into a chart and a controls panel. Three parameters — group by (department/job title/country), aggregation (min/max/avg/sum/count), and a created-at date range — jointly determine a single chart, replacing the original three-fixed-chart idea. Sum/count render as pie, min/max/avg as bar. Group by and aggregation use segmented controls. New Dashboard:: query and presenter objects handle the data, separate from Step 5's Employee::FilterService. ECharts loads via an importmap pin. Changing a parameter updates only the chart via Turbo Frame.
+
+Refer: `docs/plans/create_the_dashboard_page.md`
 
 ## 8. Write a Script to Seed the Database
 

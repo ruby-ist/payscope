@@ -1,5 +1,7 @@
 class Employee
   class SortService
+    include Whitelistable
+
     COLUMNS = %w[employee_code full_name job_title department country currency
                  normalized_usd_salary created_at updated_at].freeze
 
@@ -28,11 +30,6 @@ class Employee
 
     def with_exchange_rate(relation)
       relation.joins_values.include?(:exchange_rate) ? relation : relation.joins(:exchange_rate)
-    end
-
-    def whitelisted(value, allowed, fallback)
-      value = value.to_s
-      allowed.include?(value) ? value : fallback
     end
   end
 end
