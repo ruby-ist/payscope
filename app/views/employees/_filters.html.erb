@@ -1,0 +1,76 @@
+<%
+  label_classes = "mb-1 block text-sm text-text-muted"
+  pair_classes = "grid grid-cols-2 gap-x-3 gap-y-3"
+  field_id = ->(key) { "#{form_id}_#{key}" }
+%>
+
+<%= form_with url: employees_path, method: :get, id: form_id,
+              data: { controller: "filters", action: "submit->filters#submit",
+                      turbo_frame: "employee_results", turbo_action: "advance" },
+              class: "space-y-4" do %>
+  <% if sort_field %>
+    <%= hidden_field_tag :sort_by, sort_column, id: field_id.call(:sort_by) %>
+    <%= hidden_field_tag :sort_dir, sort_direction, id: field_id.call(:sort_dir) %>
+  <% end %>
+
+  <div class="<%= pair_classes %>">
+    <% { full_name: "Name", employee_code: "Employee code", department: "Department",
+         job_title: "Job title", country: "Country" }.each do |key, label| %>
+      <div>
+        <%= label_tag field_id.call(key), label, class: label_classes %>
+        <%= text_field_tag key, params[key], id: field_id.call(key),
+                           class: "field w-full", autocomplete: "off" %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= label_tag field_id.call(:exchange_rate_id), "Currency", class: label_classes %>
+      <%= select_tag :exchange_rate_id,
+                     options_from_collection_for_select(exchange_rates, :id, :currency, params[:exchange_rate_id]),
+                     id: field_id.call(:exchange_rate_id), include_blank: "Any", class: "field w-full" %>
+    </div>
+  </div>
+
+  <div>
+    <fieldset>
+      <legend class="<%= label_classes %>">Salary (USD)</legend>
+
+      <div class="<%= pair_classes %>">
+        <%= number_field_tag "normalized_usd_salary[from]", params.dig(:normalized_usd_salary, :from),
+                             id: field_id.call(:salary_from), step: 0.01, min: 0, placeholder: "Min",
+                             class: "field numeric w-full", aria: { label: "Minimum salary" } %>
+        <%= number_field_tag "normalized_usd_salary[to]", params.dig(:normalized_usd_salary, :to),
+                             id: field_id.call(:salary_to), step: 0.01, min: 0, placeholder: "Max",
+                             class: "field numeric w-full", aria: { label: "Maximum salary" } %>
+      </div>
+    </fieldset>
+  </div>
+
+  <% { "Created" => [ :created_at, :created ], "Updated" => [ :updated_at, :updated ] }.each do |label, (column, prefix)| %>
+    <div>
+      <div class="<%= pair_classes %>">
+        <div>
+          <%= label_tag field_id.call("#{prefix}_from"), "#{label} from", class: label_classes %>
+          <%= date_field_tag "#{column}[from]", params.dig(column, :from), id: field_id.call("#{prefix}_from"),
+                             class: "field w-full", aria: { label: "#{label} on or after" } %>
+        </div>
+        <div>
+          <%= label_tag field_id.call("#{prefix}_to"), "#{label} till", class: label_classes %>
+          <%= date_field_tag "#{column}[to]", params.dig(column, :to), id: field_id.call("#{prefix}_to"),
+                             class: "field w-full", aria: { label: "#{label} on or before" } %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+    <%= button_tag type: :submit, name: nil, class: "btn-primary" do %>
+      <%= icon_label "sliders_horizontal", "Filter" %>
+    <% end %>
+
+    <%= link_to employees_path(sort_by: sort_column, sort_dir: sort_direction), class: "btn-neutral",
+                data: { turbo_frame: "_top" } do %>
+      <%= icon_label "x", "Reset" %>
+    <% end %>
+  </div>
+<% end %>

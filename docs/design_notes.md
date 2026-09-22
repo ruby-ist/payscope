@@ -111,9 +111,11 @@ Department    | Country    | Created   | Updated        [✎ Edit]
 
 ### Reserved regions
 
-The **filter sidebar sits on the left** — `md:grid-cols-[16rem_minmax(0,1fr)]`, with the `<aside>` before the list in the DOM so reading and tab order match the visual order. Below 768px it becomes a drawer sliding in **from the left**, opened by a `Filter` button and driven by `drawer_controller.js`. Both hold only a heading and a `<!-- filters: Step 5 -->` marker.
+The **filter sidebar sits on the left** — `md:grid-cols-[22rem_minmax(0,1fr)]`, with the `<aside>` before the list in the DOM so reading and tab order match the visual order. Below 768px it becomes a drawer sliding in **from the left**, opened by a `Filter` button and driven by `drawer_controller.js`. Both render the same `employees/_filters` partial: the column is 22rem (drawer `w-88`) so its fields pair up two to a row, including each range's two bounds. Only one of the two copies is reachable at any width, so each scopes its field ids by its form id.
 
-The five-stat aggregate bar above the list is a styled container with placeholder dashes — a flex row on desktop, a horizontally scroll-snapping strip on mobile. Real min/max/avg/count/sum values are Step 5's job.
+Each group's separating rule sits on a wrapper `<div>`, not on the `<fieldset>` itself — a `<legend>` renders *on* its fieldset's top border and punches a gap in it.
+
+The five-stat aggregate bar above the list holds the min/max/avg/count/sum of the filtered set — a flex row on desktop, a horizontally scroll-snapping strip on mobile. Amounts render through `usd_amount`, which shows an em dash until Step 6 normalizes a salary.
 
 ---
 
@@ -206,6 +208,6 @@ Two are in play, and they are not interchangeable:
 ## 12. Quick Reference for Implementation
 
 - **Step 4 (pagination):** style controls as `.btn-neutral`; note the list panel's `first:`/`last:` rounding assumes rows are the panel's only children.
-- **Step 5 (search/aggregation):** drop fields into the left sidebar and drawer containers (§5) and real values into the aggregate bar; reuse `truncated_text` for any new text column.
+- **Step 5 (search/aggregation):** done — fields sit in the left sidebar and drawer containers (§5), real values in the aggregate bar. The sort dropdown sits by "New employee" and joins the sidebar's form through its `form` attribute.
 - **Step 6 (normalization):** no visual work, but the employee row's Salary chip and Updated timestamp are where a recomputed value becomes visible.
 - **Step 7 (dashboard):** ECharts theming should draw from the §2 tokens rather than introducing new hex values.

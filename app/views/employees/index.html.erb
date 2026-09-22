@@ -7,6 +7,32 @@
         <button type="button" class="btn-neutral md:hidden" data-action="drawer#open">
           <%= icon_label "sliders_horizontal", "Filter" %>
         </button>
+
+        <div class="flex items-center gap-2" data-controller="sort"
+             data-sort-ascending-label-value="Sorted ascending — press to sort descending"
+             data-sort-descending-label-value="Sorted descending — press to sort ascending">
+          <%= label_tag :sort_by, "Sort by", class: "whitespace-nowrap text-sm text-text-muted" %>
+
+          <div class="flex items-stretch">
+            <%= select_tag :sort_by, options_for_select(sort_by_options, sort_column),
+                           form: "employee_filters", class: "field rounded-r-none border-r-0",
+                           data: { sort_target: "column", action: "change->sort#submit" } %>
+
+            <%= hidden_field_tag :sort_dir, sort_direction, form: "employee_filters",
+                                 data: { sort_target: "direction" } %>
+
+            <button type="button" class="btn-neutral rounded-l-none" data-action="sort#toggle"
+                    data-sort-target="toggle"
+                    title="<%= sort_direction == 'asc' ? 'Sorted ascending — press to sort descending' : 'Sorted descending — press to sort ascending' %>"
+                    aria-label="<%= sort_direction == 'asc' ? 'Sorted ascending — press to sort descending' : 'Sorted descending — press to sort ascending' %>">
+              <% Employee::SortService::DIRECTIONS.each do |direction| %>
+                <%= tag.span icon(direction == "asc" ? "arrow_up_narrow_wide" : "arrow_down_wide_narrow"),
+                             class: ("hidden" unless direction == sort_direction),
+                             data: { sort_target: "#{direction}Icon" } %>
+              <% end %>
+            </button>
+          </div>
+        </div>
       <% end %>
 
       <%= link_to new_employee_path, class: "btn-primary" do %>
@@ -17,50 +43,61 @@
 
   <%# Everything keyed off @sidebar_data_loaded sits outside the employee_list
       frame, so paging neither re-queries nor re-renders it. %>
-  <% if @sidebar_data_loaded %>
-    <%= render "shared/aggregate_bar" %>
-  <% end %>
-
-  <div class="md:grid md:grid-cols-[16rem_minmax(0,1fr)] md:items-start md:gap-6">
+  <%= turbo_frame_tag "employee_results", class: "block" do %>
     <% if @sidebar_data_loaded %>
-      <aside data-filter-sidebar class="hidden rounded-md border border-border bg-surface p-4 md:block">
-        <h2 class="text-lg font-semibold text-nav-bg">Filters</h2>
-        <%# filters: Step 5 %>
-      </aside>
+      <%= render "shared/aggregate_bar", summary: @salary_summary, pagy: @pagy %>
     <% end %>
 
-    <section>
-      <%= turbo_frame_tag "employee_list", class: "block" do %>
-        <div id="employees" class="flex flex-col">
-          <%= render @employees %>
-        </div>
-
-        <% if @employees.any? %>
-          <div class="rounded-b-md border-x border-b border-border bg-surface">
-            <%= render "pagy/nav", pagy: @pagy %>
-          </div>
-        <% elsif @pagy.count.positive? %>
-          <%# Records exist, just not on the requested page — don't claim the
-              table is empty. %>
-          <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
-            No employees on this page.
-            <%= link_to "Back to the first page", employees_path, class: "text-primary hover:text-primary-hover" %>
-          </p>
-        <% else %>
-          <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
-            No employees yet.
-          </p>
-        <% end %>
+    <div class="md:grid md:grid-cols-[22rem_minmax(0,1fr)] md:items-start md:gap-6">
+      <% if @sidebar_data_loaded %>
+        <aside data-filter-sidebar class="hidden rounded-md border border-border bg-surface p-4 md:block">
+          <h2 class="mb-4 text-lg font-semibold text-nav-bg">Filters</h2>
+          <%= render "employees/filters", form_id: "employee_filters", exchange_rates: @exchange_rates, sort_field: false %>
+        </aside>
       <% end %>
-    </section>
-  </div>
 
-  <%# Mobile filter drawer — container and toggle behaviour only; fields land in Step 5. %>
+      <section>
+        <%= turbo_frame_tag "employee_list", class: "block" do %>
+          <% if @employees.any? %>
+            <div class="rounded-t-md border-x border-t border-border bg-surface">
+              <%= render "pagy/nav", pagy: @pagy %>
+            </div>
+          <% end %>
+
+          <div id="employees" class="flex flex-col" data-page-range="<%= page_showing(@pagy) %>">
+            <%= render @employees %>
+          </div>
+
+          <% if @employees.any? %>
+            <div class="rounded-b-md border-x border-b border-t border-border bg-surface">
+              <%= render "pagy/nav", pagy: @pagy %>
+            </div>
+          <% elsif @pagy.count.positive? %>
+            <%# Records exist, just not on the requested page — don't claim the
+                table is empty. %>
+            <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
+              No employees on this page.
+              <%= link_to "Back to the first page", employees_path, class: "text-primary hover:text-primary-hover" %>
+            </p>
+          <% elsif filters_applied? %>
+            <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
+              No employees match these filters.
+            </p>
+          <% else %>
+            <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
+              No employees yet.
+            </p>
+          <% end %>
+        <% end %>
+      </section>
+    </div>
+  <% end %>
+
   <% if @sidebar_data_loaded %>
     <div data-drawer-target="panel" class="hidden md:hidden">
       <div class="fixed inset-0 z-40 bg-text/40" data-action="click->drawer#close"></div>
 
-      <div class="fixed inset-y-0 left-0 z-50 flex w-80 max-w-full flex-col border-r border-border bg-surface">
+      <div class="fixed inset-y-0 left-0 z-50 flex w-88 max-w-[calc(100vw-3rem)] flex-col border-r border-border bg-surface">
         <div class="flex items-center justify-between border-b border-border px-4 py-3">
           <h2 class="text-lg font-semibold text-nav-bg">Filters</h2>
           <button type="button" class="btn-neutral" data-action="drawer#close">
@@ -69,7 +106,7 @@
         </div>
 
         <div class="flex-1 overflow-y-auto px-4 py-4">
-          <%# filters: Step 5 %>
+          <%= render "employees/filters", form_id: "employee_filters_drawer", exchange_rates: @exchange_rates, sort_field: true %>
         </div>
       </div>
     </div>

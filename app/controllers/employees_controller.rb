@@ -2,8 +2,10 @@ class EmployeesController < ApplicationController
   before_action :set_employee, only: %i[edit update destroy]
 
   def index
-    @pagy, @employees = pagy(Employee.order(:id))
-    load_sidebar_data unless list_frame_request?
+    filtered = Employee::FilterService.new(listing_params).filter_employees
+    employees = Employee::SortService.new(listing_params).sort_employees(filtered)
+    @pagy, @employees = pagy(employees.includes(:exchange_rate))
+    load_sidebar_data(employees) unless list_frame_request?
   end
 
   def new
@@ -45,8 +47,16 @@ class EmployeesController < ApplicationController
     turbo_frame_request_id == "employee_list"
   end
 
-  def load_sidebar_data
+  def load_sidebar_data(employees)
+    @salary_summary = Employee::SalaryAggregationService.new(employees).aggregate_summary
+    @exchange_rates = ExchangeRate.order(:currency)
     @sidebar_data_loaded = true
+  end
+
+  def listing_params
+    params.permit(:full_name, :employee_code, :department, :country, :job_title, :exchange_rate_id,
+                  :sort_by, :sort_dir,
+                  normalized_usd_salary: %i[from to], created_at: %i[from to], updated_at: %i[from to])
   end
 
   def set_employee

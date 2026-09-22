@@ -20,6 +20,13 @@ module ApplicationHelper
             aria: { current: ("page" if active) }
   end
 
+  def usd_amount(value)
+    return tag.span("—", class: "text-text-muted") if value.nil?
+
+    safe_join([ number_with_precision(value, precision: 2, delimiter: ","),
+                tag.span("USD", class: "text-text-muted") ], "\u00A0")
+  end
+
   # Clips overflowing text while keeping the full value available to mouse users
   # (title) and screen readers (aria-label) — docs/design_notes.md §6.
   def truncated_text(value, css_class: nil)

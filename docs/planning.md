@@ -36,11 +36,13 @@ Refer: `docs/plans/style_the_pages_with_css_framework.md`
 
 We'll add pagination to the employee index so we're never loading all 10,000+ records at once. We'll make sure pagination state persists correctly alongside search/filter params, and that page navigation happens via Turbo Frame rather than a full page reload.
 
-Refer: `docs/plan/implement_pagination.md`
+Refer: `docs/plans/implement_pagination.md`
 
 ## 5. Implement Search Functionality and Aggregation Data Display
 
-TBU
+We'll build a query object that takes filter params (department, country, job_title, currency, name/code search) and returns a scoped relation, plus an aggregates object that computes min/max/avg/count/sum over that same scope. The search form will submit via Turbo, debounced with Stimulus, and the aggregate summary bar will update to reflect the filtered set rather than the whole table. We'll test the query and aggregate logic in isolation, independent of any view.
+
+Refer: `docs/plans/implement_search_functionality_and_aggregation_data_display.md`
 
 ## 6. Implement the Currency Normalization Functionality
 

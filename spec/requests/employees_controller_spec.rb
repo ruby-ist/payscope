@@ -129,6 +129,202 @@ RSpec.describe EmployeesController do
         end
       end
     end
+
+    context 'when filtering and sorting' do
+      let(:ada) do
+        create(:employee, employee_code: 'EMP-001', full_name: 'Ada Lovelace', department: 'Engineering',
+                          exchange_rate: create(:exchange_rate, currency: 'GBP'), normalized_usd_salary: 100_000)
+      end
+
+      let(:grace) do
+        create(:employee, employee_code: 'EMP-002', full_name: 'Grace Hopper', department: 'Finance',
+                          exchange_rate: create(:exchange_rate, currency: 'USD'), normalized_usd_salary: 150_000)
+      end
+
+      let(:linus) do
+        create(:employee, employee_code: 'EMP-003', full_name: 'Linus Pauling', department: 'Operations',
+                          exchange_rate: create(:exchange_rate, currency: 'INR'), normalized_usd_salary: 50_000)
+      end
+
+      before { [ ada, grace, linus ] }
+
+      context 'without any filter' do
+        before { get employees_path }
+
+        it 'sums every employee into the aggregate bar' do
+          expect(response.body).to include('300,000.00')
+        end
+      end
+
+      context 'with a filter applied' do
+        before { get employees_path(department: 'Finance') }
+
+        it 'renders only the matching employees' do
+          expect(rendered_employee_ids).to eq([ grace.id ])
+        end
+
+        it 'aggregates the filtered set' do
+          expect(response.body).to include('150,000.00')
+        end
+
+        it 'leaves the filtered-away salaries out of the aggregates' do
+          expect(response.body).not_to include('100,000.00')
+        end
+
+        it 'keeps the submitted filter in the form' do
+          expect(response.body).to include('value="Finance"')
+        end
+      end
+
+      context 'with a sort applied' do
+        before { get employees_path(sort_by: 'full_name', sort_dir: 'desc') }
+
+        it 'renders the employees in the requested order' do
+          expect(rendered_employee_ids).to eq([ linus.id, grace.id, ada.id ])
+        end
+      end
+
+      context 'with a sort on the currency association' do
+        before { get employees_path(sort_by: 'currency', sort_dir: 'asc') }
+
+        it 'orders by the exchange rate currency' do
+          expect(rendered_employee_ids).to eq([ ada.id, linus.id, grace.id ])
+        end
+      end
+
+      context 'with a tampered sort param' do
+        before { get employees_path(sort_by: 'employees.id; DROP TABLE employees', sort_dir: 'up') }
+
+        it 'returns http success' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'falls back to the default order' do
+          expect(rendered_employee_ids).to eq([ ada.id, grace.id, linus.id ])
+        end
+      end
+
+      context 'with filters on a full page request' do
+        let(:sort_direction_input) { response.body[/<input[^>]*id="sort_dir"[^>]*>/] }
+
+        before { get employees_path(department: 'Finance', sort_by: 'full_name', sort_dir: 'desc') }
+
+        it 'renders the filter sidebar' do
+          expect(response.body).to include('data-filter-sidebar')
+        end
+
+        it 'offers the known currencies in the filter form' do
+          expect(response.body).to include(%(<option value="#{grace.exchange_rate_id}">USD</option>))
+        end
+
+        it 'marks the requested sort column as selected' do
+          expect(response.body).to include('<option selected="selected" value="full_name">')
+        end
+
+        it 'carries the requested direction on the toggle' do
+          expect(response.body).to include('<input type="hidden" name="sort_dir" id="sort_dir" value="desc"')
+        end
+
+        it 'submits the direction with the filter form it sits outside of' do
+          expect(sort_direction_input).to include(%(form="employee_filters"))
+        end
+
+        it 'shows the arrow for the direction in effect' do
+          expect(response.body).to include('<span data-sort-target="descIcon">')
+        end
+
+        it 'hides the arrow for the other direction' do
+          expect(response.body).to include('<span class="hidden" data-sort-target="ascIcon">')
+        end
+
+        it 'labels the toggle with the order in effect' do
+          expect(response.body).to include('aria-label="Sorted descending')
+        end
+      end
+
+      context 'when the results frame is requested' do
+        before { get employees_path(department: 'Finance'), headers: { "Turbo-Frame" => "employee_results" } }
+
+        it 'aggregates the filtered set' do
+          expect(response.body).to include('150,000.00')
+        end
+      end
+
+      context 'when only the employee list frame is requested' do
+        before do
+          get employees_path(department: 'Finance', sort_by: 'full_name', sort_dir: 'desc'),
+              headers: { "Turbo-Frame" => "employee_list" }
+        end
+
+        it 'still applies the filter' do
+          expect(rendered_employee_ids).to eq([ grace.id ])
+        end
+
+        it 'does not render the aggregate bar' do
+          expect(response.body).not_to include('data-aggregate-bar')
+        end
+      end
+    end
+
+    context 'when paginating a filtered and sorted listing' do
+      let(:outsider) { create(:employee, department: 'Finance', exchange_rate: create(:exchange_rate)) }
+
+      let(:pagination_links) do
+        nav = response.body[%r{<nav[^>]*aria-label="Pagination".*?</nav>}m].to_s
+        nav.scan(/href="([^"]*)"/).flatten.map { |href| CGI.unescapeHTML(href) }
+      end
+
+      before do
+        # rubocop:disable FactoryBot/ExcessiveCreateList
+        create_list(:employee, 30, department: 'Engineering', exchange_rate: create(:exchange_rate))
+        # rubocop:enable FactoryBot/ExcessiveCreateList
+        outsider
+        get employees_path(department: 'Engineering', sort_by: 'employee_code', sort_dir: 'desc')
+      end
+
+      it 'reports the page slice under the aggregate count' do
+        expect(response.body).to include('(showing 1–25)')
+      end
+
+      it 'renders a pagination nav above and below the rows' do
+        expect(response.body.scan('aria-label="Pagination"').size).to eq(2)
+      end
+
+      it 'hands the page slice to the frame for the count card to pick up' do
+        expect(response.body).to include('data-page-range="(showing 1–25)"')
+      end
+
+      it 'carries the filter into every page link' do
+        expect(pagination_links).to all(include('department=Engineering'))
+      end
+
+      it 'carries the sort column into every page link' do
+        expect(pagination_links).to all(include('sort_by=employee_code'))
+      end
+
+      it 'carries the sort direction into every page link' do
+        expect(pagination_links).to all(include('sort_dir=desc'))
+      end
+
+      context 'when following a page link' do
+        before do
+          get employees_path(department: 'Engineering', sort_by: 'employee_code', sort_dir: 'desc', page: 2),
+              headers: { "Turbo-Frame" => "employee_list" }
+        end
+
+        it 'keeps the filter applied' do
+          expect(rendered_employee_ids).not_to include(outsider.id)
+        end
+
+        it 'renders only the remainder of the filtered set' do
+          expect(rendered_employee_ids.size).to eq(5)
+        end
+
+        it 'hands the next page slice to the frame' do
+          expect(response.body).to include('data-page-range="(showing 26–30)"')
+        end
+      end
+    end
   end
 
   describe 'POST /employees' do

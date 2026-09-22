@@ -11,7 +11,7 @@
                      "bg-surface px-3 py-2 text-sm text-text-muted"
 %>
 
-<nav class="flex flex-wrap items-center justify-center gap-2 border-t border-border px-4 py-3"
+<nav class="flex flex-wrap items-center justify-center gap-2 px-4 py-3"
      aria-label="Pagination">
   <% if data[:previous] %>
     <%= link_to pagy.page_url(data[:previous] == 1 ? :first : data[:previous]), class: "btn-neutral" do %>

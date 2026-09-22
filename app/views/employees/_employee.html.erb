@@ -7,10 +7,10 @@
 
 <%#
   Rows sit flush against each other: side borders plus a top border give a single
-  divider between neighbours, and only the first/last row is rounded. Striping is
-  done with :nth-child so it stays correct after a row is removed via turbo_stream.
+  divider between neighbours. Striping is done with :nth-child so it stays
+  correct after a row is removed via turbo_stream.
 %>
-<div id="<%= dom_id(employee) %>" class="group flex flex-col gap-3 border-x border-t border-border bg-surface p-4 first:rounded-t-md even:bg-surface-alt last:rounded-b-md last:border-b sm:flex-row sm:items-center sm:gap-6">
+<div id="<%= dom_id(employee) %>" class="group flex flex-col gap-3 border-x border-t border-border bg-surface p-4 even:bg-surface-alt sm:flex-row sm:items-center sm:gap-6">
   <dl class="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-4">
     <div class="min-w-0">
       <dt class="<%= label_classes %>">Employee code</dt>
@@ -60,7 +60,7 @@
   <%# Side by side in the narrow footer; stacked and equal width once they sit
       beside the field grid, so they line up with its two rows. %>
   <div class="flex flex-wrap items-center justify-end gap-2 border-t border-border pt-3 sm:shrink-0 sm:flex-col sm:items-stretch sm:border-0 sm:pt-0">
-    <%= link_to edit_employee_path(employee), class: "btn-neutral justify-center" do %>
+    <%= link_to edit_employee_path(employee), class: "btn-neutral justify-center", data: { turbo_frame: "_top" } do %>
       <%= icon_label "pencil", "Edit" %>
     <% end %>
 

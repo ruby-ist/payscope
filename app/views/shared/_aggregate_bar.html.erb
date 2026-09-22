@@ -1,11 +1,24 @@
-<%# Styled container only — the real min/max/avg/count/sum values are Step 5's job. %>
+<%
+  cards = [
+    { label: "Min", value: usd_amount(summary[:minimum]) },
+    { label: "Max", value: usd_amount(summary[:maximum]) },
+    { label: "Avg", value: usd_amount(summary[:average]) },
+    { label: "Sum", value: usd_amount(summary[:total]) },
+    { label: "Count", value: number_with_delimiter(summary[:count]), showing: page_showing(pagy) },
+  ]
+%>
+
 <div data-aggregate-bar
      class="-mx-4 mb-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:overflow-visible md:px-0">
-  <% %w[Min Max Avg Count Sum].each do |label| %>
+  <% cards.each do |card| %>
     <div class="min-w-32 flex-1 shrink-0 snap-start rounded-md border border-border bg-surface px-3 py-2">
-      <p class="text-xs uppercase tracking-wide text-text-muted"><%= label %></p>
-      <p class="numeric text-lg">—</p>
+      <p class="text-xs uppercase tracking-wide text-text-muted"><%= card[:label] %></p>
+      <p class="numeric text-lg py-4"><%= card[:value] %></p>
+
+      <% if card.key?(:showing) %>
+        <p class="text-xs text-text-muted" data-controller="page-range"
+           data-action="turbo:frame-load@document->page-range#update"><%= card[:showing] %></p>
+      <% end %>
     </div>
   <% end %>
 </div>
-<%# aggregate values: Step 5 %>
