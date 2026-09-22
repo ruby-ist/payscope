@@ -101,4 +101,52 @@ RSpec.describe Employee do
       expect(employee.currency).to eq('EUR')
     end
   end
+
+  describe 'normalized_usd_salary calculation' do
+    let(:exchange_rate) { create(:exchange_rate, rate: 1.5) }
+
+    context 'when creating an employee' do
+      let(:employee) { create(:employee, local_salary: 1_000, exchange_rate: exchange_rate) }
+
+      it 'computes normalized_usd_salary from the local salary and exchange rate' do
+        expect(employee.normalized_usd_salary).to eq(1_500.00)
+      end
+    end
+
+    context 'when local_salary changes' do
+      let(:employee) { create(:employee, local_salary: 1_000, exchange_rate: exchange_rate) }
+
+      it 'recomputes normalized_usd_salary' do
+        employee.update(local_salary: 2_000)
+
+        expect(employee.normalized_usd_salary).to eq(3_000.00)
+      end
+    end
+
+    context 'when exchange_rate_id changes' do
+      let(:new_exchange_rate) { create(:exchange_rate, rate: 2) }
+      let(:employee) { create(:employee, local_salary: 1_000, exchange_rate: exchange_rate) }
+
+      it 'recomputes normalized_usd_salary using the new rate' do
+        employee.update(exchange_rate: new_exchange_rate)
+
+        expect(employee.normalized_usd_salary).to eq(2_000.00)
+      end
+    end
+
+    context 'when an unrelated field changes' do
+      let(:employee) { create(:employee, local_salary: 1_000, exchange_rate: exchange_rate) }
+
+      before do
+        employee
+        allow(Employee::SalaryNormalizer).to receive(:new).and_call_original
+      end
+
+      it 'does not recompute normalized_usd_salary' do
+        employee.update(full_name: 'New Name')
+
+        expect(Employee::SalaryNormalizer).not_to have_received(:new)
+      end
+    end
+  end
 end

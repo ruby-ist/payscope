@@ -78,7 +78,7 @@ class ExchangeRatesController < ApplicationController
   end
 
   def load_index(new_exchange_rate: ExchangeRate.new, editing_exchange_rate: nil, showing_new_form: false)
-    @exchange_rates = ExchangeRate.all
+    @exchange_rates = ExchangeRate.order(:created_at).all
     @new_exchange_rate = new_exchange_rate
     @editing_exchange_rate = editing_exchange_rate
     @showing_new_form = showing_new_form

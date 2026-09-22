@@ -48,4 +48,41 @@ RSpec.describe ExchangeRate do
       end
     end
   end
+
+  describe 'last_synced_at' do
+    context 'when updating the rate value' do
+      let!(:exchange_rate) { create(:exchange_rate, rate: 1.5) }
+
+      it 'does not set last_synced_at itself, leaving that to the recalculation job' do
+        exchange_rate.update(rate: 2.0)
+
+        expect(exchange_rate.last_synced_at).to be_nil
+      end
+    end
+  end
+
+  describe 'recalculation job enqueueing' do
+    context 'when creating a new exchange rate' do
+      it 'does not enqueue the recalculation job' do
+        expect { create(:exchange_rate) }.not_to have_enqueued_job(Employee::NormalizedSalariesRecalculationJob)
+      end
+    end
+
+    context 'when updating the rate value' do
+      let!(:exchange_rate) { create(:exchange_rate, rate: 1.5) }
+
+      it 'enqueues the recalculation job with the exchange rate id' do
+        expect { exchange_rate.update(rate: 2.0) }
+          .to have_enqueued_job(Employee::NormalizedSalariesRecalculationJob).with(exchange_rate.id)
+      end
+    end
+
+    context 'when updating the record without changing the rate value' do
+      let!(:exchange_rate) { create(:exchange_rate, rate: 1.5, currency: 'USD') }
+
+      it 'does not enqueue the recalculation job' do
+        expect { exchange_rate.update(currency: 'EUR') }.not_to have_enqueued_job(Employee::NormalizedSalariesRecalculationJob)
+      end
+    end
+  end
 end

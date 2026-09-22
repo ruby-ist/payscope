@@ -4,13 +4,13 @@ RSpec.describe Employee::SalaryAggregationService do
   subject(:summary) { described_class.new(scope).aggregate_summary }
 
   let(:scope) { Employee.all }
-  let(:exchange_rate) { create(:exchange_rate) }
+  let(:exchange_rate) { create(:exchange_rate, rate: 1) }
 
   describe 'over several employees' do
     before do
-      create(:employee, exchange_rate: exchange_rate, normalized_usd_salary: 50_000)
-      create(:employee, exchange_rate: exchange_rate, normalized_usd_salary: 100_000)
-      create(:employee, exchange_rate: exchange_rate, normalized_usd_salary: 150_000)
+      create(:employee, exchange_rate: exchange_rate, local_salary: 50_000)
+      create(:employee, exchange_rate: exchange_rate, local_salary: 100_000)
+      create(:employee, exchange_rate: exchange_rate, local_salary: 150_000)
     end
 
     it 'reports the lowest salary' do
@@ -64,8 +64,8 @@ RSpec.describe Employee::SalaryAggregationService do
 
   describe 'over employees with no normalized salary yet' do
     before do
-      create(:employee, exchange_rate: exchange_rate, normalized_usd_salary: 100_000)
-      create(:employee, exchange_rate: exchange_rate, normalized_usd_salary: nil)
+      create(:employee, exchange_rate: exchange_rate, local_salary: 100_000)
+      create(:employee, exchange_rate: exchange_rate, local_salary: 100_000).update_column(:normalized_usd_salary, nil)
     end
 
     it 'counts every employee in the scope' do

@@ -8,8 +8,8 @@ To-Do:
 - [x] 2. Set up Views and Controllers for Basic CRUD
 - [x] 3. Style the Pages with CSS Framework
 - [x] 4. Implement Pagination
-- [ ] 5. Implement Search Functionality and Aggregation Data Display
-- [ ] 6. Implement the Currency Normalization Functionality
+- [x] 5. Implement Search Functionality and Aggregation Data Display
+- [x] 6. Implement the Currency Normalization Functionality
 - [ ] 7. Create the Dashboard Page
 - [ ] 8. Write a Script to Seed the Database
 - [ ] 9. Code Optimization and Feature Improvements
@@ -46,7 +46,9 @@ Refer: `docs/plans/implement_search_functionality_and_aggregation_data_display.m
 
 ## 6. Implement the Currency Normalization Functionality
 
-TBU
+We'll build a normalizer service that converts an employee's local_salary to normalized_usd_salary using the current exchange rate for that currency, called on employee create/update. When an exchange rate is edited, we'll enqueue a background job that recalculates normalized_usd_salary for every employee in that currency, so a rate change doesn't block the request. We'll unit test the normalizer on its own and test that editing a rate enqueues the job and produces correct results.
+
+Refer: `docs/plans/implement_the_currency_normalization_functionality.md`
 
 ## 7. Create the Dashboard Page
 

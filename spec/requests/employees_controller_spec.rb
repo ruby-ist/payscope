@@ -133,17 +133,17 @@ RSpec.describe EmployeesController do
     context 'when filtering and sorting' do
       let(:ada) do
         create(:employee, employee_code: 'EMP-001', full_name: 'Ada Lovelace', department: 'Engineering',
-                          exchange_rate: create(:exchange_rate, currency: 'GBP'), normalized_usd_salary: 100_000)
+                          exchange_rate: create(:exchange_rate, currency: 'GBP', rate: 1), local_salary: 100_000)
       end
 
       let(:grace) do
         create(:employee, employee_code: 'EMP-002', full_name: 'Grace Hopper', department: 'Finance',
-                          exchange_rate: create(:exchange_rate, currency: 'USD'), normalized_usd_salary: 150_000)
+                          exchange_rate: create(:exchange_rate, currency: 'USD', rate: 1), local_salary: 150_000)
       end
 
       let(:linus) do
         create(:employee, employee_code: 'EMP-003', full_name: 'Linus Pauling', department: 'Operations',
-                          exchange_rate: create(:exchange_rate, currency: 'INR'), normalized_usd_salary: 50_000)
+                          exchange_rate: create(:exchange_rate, currency: 'INR', rate: 1), local_salary: 50_000)
       end
 
       before { [ ada, grace, linus ] }

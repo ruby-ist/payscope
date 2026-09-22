@@ -3,4 +3,11 @@
 require_relative "../config/environment"
 require "solid_queue/cli"
 
+if Rails.env.development? && !ActiveSupport::Logger.logger_outputs_to?(Rails.logger, STDERR, STDOUT)
+  console = ActiveSupport::Logger.new(STDOUT)
+  console.formatter = Rails.logger.formatter
+  console.level = Rails.logger.level
+  Rails.logger.broadcast_to(console)
+end
+
 SolidQueue::Cli.start(ARGV)

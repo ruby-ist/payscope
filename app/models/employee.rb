@@ -8,4 +8,16 @@ class Employee < ApplicationRecord
   validates :department, presence: true
   validates :country, presence: true
   validates :local_salary, presence: true, numericality: { greater_than: 0 }
+
+  before_save :normalize_salary, if: :normalize_salary?
+
+  private
+
+  def normalize_salary?
+    local_salary_changed? || exchange_rate_id_changed?
+  end
+
+  def normalize_salary
+    self.normalized_usd_salary = SalaryNormalizer.new(local_salary, exchange_rate).normalized_usd_salary
+  end
 end

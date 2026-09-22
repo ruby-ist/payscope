@@ -3,9 +3,13 @@
     <span class="numeric">1</span>
     <span class="rate-value numeric"><%= exchange_rate.currency %></span>
     <span class="text-text-muted mx-6">=</span>
-    <span class="rate-value numeric"><%= number_with_precision exchange_rate.rate, precision: 6 %></span>
+    <span class="rate-value numeric"><%= formatted_rate(exchange_rate) %></span>
     <span class="numeric text-text-muted">USD</span>
   </p>
+
+  <div class="flex flex-1 justify-center">
+    <%= last_synced_label(exchange_rate) %>
+  </div>
 
   <div class="flex flex-wrap items-center gap-2">
     <%= link_to edit_exchange_rate_path(exchange_rate), class: "btn-neutral" do %>

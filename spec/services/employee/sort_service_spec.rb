@@ -9,8 +9,8 @@ RSpec.describe Employee::SortService do
     create(:employee,
            employee_code: 'EMP-001', full_name: 'Ada Lovelace', job_title: 'Staff Engineer',
            department: 'Engineering', country: 'United Kingdom',
-           exchange_rate: create(:exchange_rate, currency: 'GBP'),
-           normalized_usd_salary: 100_000,
+           exchange_rate: create(:exchange_rate, currency: 'GBP', rate: 1),
+           local_salary: 100_000,
            created_at: Time.zone.local(2026, 1, 10), updated_at: Time.zone.local(2026, 3, 5))
   end
 
@@ -18,8 +18,8 @@ RSpec.describe Employee::SortService do
     create(:employee,
            employee_code: 'EMP-002', full_name: 'Grace Hopper', job_title: 'Finance Analyst',
            department: 'Finance', country: 'United States',
-           exchange_rate: create(:exchange_rate, currency: 'USD'),
-           normalized_usd_salary: 150_000,
+           exchange_rate: create(:exchange_rate, currency: 'USD', rate: 1),
+           local_salary: 150_000,
            created_at: Time.zone.local(2026, 2, 10), updated_at: Time.zone.local(2026, 4, 5))
   end
 
@@ -27,8 +27,8 @@ RSpec.describe Employee::SortService do
     create(:employee,
            employee_code: 'EMP-003', full_name: 'Linus Pauling', job_title: 'Operations Lead',
            department: 'Operations', country: 'India',
-           exchange_rate: create(:exchange_rate, currency: 'INR'),
-           normalized_usd_salary: 50_000,
+           exchange_rate: create(:exchange_rate, currency: 'INR', rate: 1),
+           local_salary: 50_000,
            created_at: Time.zone.local(2026, 3, 10), updated_at: Time.zone.local(2026, 5, 5))
   end
 
