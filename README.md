@@ -79,6 +79,7 @@ bundle exec rspec                                                   # test suite
 - [`docs/planning.md`](docs/planning.md) — the step-by-step build plan and to-do list, from initial models through the current "Code Optimization and Feature Improvements" step. Each completed step links out to a corresponding file in `docs/plans/`.
 - [`docs/plans/`](docs/plans/) — one detailed implementation plan per step in `planning.md`, numbered to match (`1_create_tables_and_models.md` through `8_write_a_script_to_seed_the_database.md`). Each describes the approach taken for that step before/while it was built — data model decisions, service boundaries, testing strategy, etc.
 - [`docs/design_notes.md`](docs/design_notes.md) — a living visual/interaction design spec, describing the UI *as currently implemented* (color tokens, typography, component patterns, per-page layout decisions, and the reasoning behind non-obvious choices). Application code refers back to specific sections via `§N` comments (e.g. `docs/design_notes.md §8`), so this file should stay in sync with the UI rather than frozen at time of writing, unlike the point-in-time plans in `docs/plans/`.
+- [`docs/decisions.md`](docs/decisions.md) — the *why* behind architecture/process choices that aren't self-evident from the code, including ones that intentionally depart from `docs/requirements.md` (e.g. `employee.currency` becoming a foreign key instead of a column, CockroachDB in production).
 
 ## Deployment
 
@@ -90,3 +91,5 @@ The app deploys to [Render.com](https://render.com). The build step is [`bin/ren
 4. Runs pending migrations (`rake db:migrate`)
 
 Production data lives in a single **CockroachDB** cluster (connected via the `DATABASE_URL` env var — see `production:` in [`config/database.yml`](config/database.yml)), rather than the separate SQLite databases Rails' default multi-database setup would otherwise use for the cache/queue/cable backends in production — Solid Cache, Solid Queue, and Solid Cable all share the one primary database instead of `connects_to`-ing dedicated ones. Production credentials (`config/credentials/production.yml.enc`) are encrypted in the repo and decrypted at boot with `RAILS_MASTER_KEY`, which Render provides as an environment variable rather than a checked-in key file.
+
+Background jobs run on **Solid Queue** rather than Sidekiq, and its supervisor runs inside the same Puma process as the web server (`config/puma.rb`, `plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]`) instead of as a separate worker process/service. See [`docs/decisions.md`](docs/decisions.md#4-solid-queue-in-process-with-puma-instead-of-sidekiq--redis) for the reasoning and the trade-off being made here.
