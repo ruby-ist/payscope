@@ -10,4 +10,4 @@ bundle exec rake db:migrate
 
 # steps to seed the database
 script/generate_seed_data --exchange-rates 8 --employees 10100 --invalid-employees 100
-bundel exec rake db:seed
+bundle exec rake db:seed
