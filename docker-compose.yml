@@ -1,0 +1,46 @@
+# Local development only — not used for deployment (see bin/render_build.sh
+# and the root Dockerfile for that). One `app` container runs web/css/jobs
+# together via `bin/dev` (Procfile.dev, through foreman), alongside `db`.
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: payscope
+      POSTGRES_PASSWORD: payscope
+      POSTGRES_DB: payscope_development
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U payscope -d payscope_development" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: web
+    command: bash -c "bin/rails db:prepare && bin/dev"
+    volumes:
+      - .:/rails
+      - bundle_data:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: payscope
+      DATABASE_PASSWORD: payscope
+    depends_on:
+      db:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+volumes:
+  db_data:
+  bundle_data:

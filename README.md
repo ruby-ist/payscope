@@ -41,6 +41,18 @@ See [`docs/requirements.md`](docs/requirements.md) for the full functional spec.
 - Bundler (`gem install bundler` if not already available)
 - A running PostgreSQL server, reachable with the credentials in [`config/database.yml`](config/database.yml)
 
+### Docker (alternative)
+
+No local Ruby/Postgres install needed — just Docker and the Compose plugin (`docker compose version`).
+
+[`config/database.yml`](config/database.yml)'s `host`/`port`/`username`/`password` are commented out by default in favor of a native local Postgres. **Uncomment those four lines before running Docker** — [`docker-compose.yml`](docker-compose.yml)'s `db` service needs them to route the connection there instead of a local socket. Re-comment them afterwards to go back to native/local development.
+
+```sh
+docker compose up --build
+```
+
+This builds the dev image ([`Dockerfile.dev`](Dockerfile.dev)) and starts two containers: `db` (Postgres 17) and `app`, which runs `bin/dev` — the same `Procfile.dev` (web / `tailwindcss:watch` / Solid Queue worker) used natively. The app is served at `http://localhost:3000`; `bin/rails db:prepare` runs automatically on `app` startup. Stop with `docker compose down` (add `-v` to also drop the Postgres data volume).
+
 ## Setup
 
 ```sh

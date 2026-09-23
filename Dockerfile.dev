@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1
+# Development image only — see Dockerfile for the production build.
+# Used by docker-compose.yml; source is bind-mounted over what's COPYed here,
+# so this just needs a working Ruby + gem install, not a lean final image.
+
+ARG RUBY_VERSION=4.0.7
+FROM docker.io/library/ruby:$RUBY_VERSION-slim
+
+WORKDIR /rails
+
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential curl git libjemalloc2 libpq-dev libvips libyaml-dev pkg-config postgresql-client && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+ENV LD_PRELOAD="/usr/local/lib/libjemalloc.so" \
+    BUNDLE_PATH="/usr/local/bundle"
+RUN ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so
+
+COPY Gemfile Gemfile.lock ./
+RUN bundle install && gem install foreman
+
+COPY . .
+
+EXPOSE 3000
+
+# Runs web/css/jobs together via Procfile.dev, same as native `bin/dev`.
+CMD ["bin/dev"]
