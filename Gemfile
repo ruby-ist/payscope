@@ -24,6 +24,9 @@ gem "pagy"
 # See the discussuion: [https://discuss.rubyonrails.org/t/internal-server-error-500-while-going-through-guide/91629/10]
 gem "json", "< 3.0.0"
 
+# No longer a default gem as of Ruby 3.4
+gem "csv"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
@@ -79,4 +82,7 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Generates realistic fake data for the seed data generator script
+  gem "faker"
 end

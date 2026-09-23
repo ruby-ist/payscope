@@ -11,7 +11,7 @@ To-Do:
 - [x] 5. Implement Search Functionality and Aggregation Data Display
 - [x] 6. Implement the Currency Normalization Functionality
 - [x] 7. Create the Dashboard Page
-- [ ] 8. Write a Script to Seed the Database
+- [x] 8. Write a Script to Seed the Database
 - [ ] 9. Code Optimization and Feature Improvements
 
 ## 1. Create Tables and Models
@@ -58,7 +58,9 @@ Refer: `docs/plans/create_the_dashboard_page.md`
 
 ## 8. Write a Script to Seed the Database
 
-TBU
+An interactive Faker-backed generator writes two CSVs (exchange rates, then employees referencing them), mixing in deliberately invalid rows. A namespaced import service validates rows via the model, batch-inserts with insert_all, computes normalized_usd_salary per row, and logs rejects to a timestamp-free error file. db/seeds.rb just calls it. Specs use small fixtures, not the real dataset.
+
+Refer: `docs/plans/write_a_script_to_seed_the_database.md`
 
 ## 9. Code Optimization and Feature Improvements
 

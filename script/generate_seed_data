@@ -1,0 +1,155 @@
+#!/usr/bin/env ruby
+require_relative "../config/environment"
+require "faker"
+require "csv"
+require "optparse"
+
+CURRENCY_CODES = %w[USD EUR GBP JPY INR AUD CAD CHF CNY SEK NZD MXN SGD HKD NOK
+                    KRW TRY RUB BRL ZAR DKK PLN THB IDR HUF CZK ILS CLP PHP AED UAH].freeze
+
+INVALID_CASES = %i[blank_full_name blank_employee_code duplicate_employee_code
+                   unsupported_currency blank_local_salary].freeze
+
+EMPLOYEE_HEADERS = %w[employee_code full_name job_title department country local_salary currency].freeze
+
+COUNTRY_CURRENCIES = {
+  "United States" => "USD",
+  "India" => "INR",
+  "Germany" => "EUR",
+  "United Kingdom" => "GBP",
+  "Canada" => "CAD",
+  "Ireland" => "EUR",
+  "Poland" => "PLN",
+  "Ukraine" => "UAH",
+  "Singapore" => "SGD",
+  "Australia" => "AUD",
+  "Netherlands" => "EUR",
+  "Israel" => "ILS"
+}.freeze
+
+COUNTRIES = COUNTRY_CURRENCIES.keys.freeze
+
+DEPARTMENTS = [ "Engineering", "Product Management", "Quality Assurance", "DevOps",
+                   "Information Security", "IT Support", "Data Engineering", "Product Design" ].freeze
+
+JOB_TITLES = [ "Software Engineer", "Senior Software Engineer", "Engineering Manager",
+                  "DevOps Engineer", "Site Reliability Engineer", "QA Engineer", "Data Engineer",
+                  "Data Scientist", "Machine Learning Engineer", "Security Analyst",
+                  "IT Support Specialist", "Systems Administrator", "Network Engineer",
+                  "Database Administrator", "Cloud Engineer", "Solutions Architect",
+                  "Frontend Developer", "Backend Developer", "Full Stack Developer",
+                  "Product Manager", "UX Designer", "Scrum Master", "Technical Writer", "CTO" ].freeze
+
+REQUIRED_OPTIONS = %i[exchange_rates employees invalid_employees].freeze
+
+def parse_options(argv)
+  options = {}
+
+  parser = OptionParser.new do |opts|
+    opts.banner = "Usage: script/generate_seed_data --exchange-rates N --employees N --invalid-employees N"
+
+    opts.on("--exchange-rates N", Integer, "How many exchange rates to generate") { |v| options[:exchange_rates] = v }
+    opts.on("--employees N", Integer, "How many employees to generate") { |v| options[:employees] = v }
+    opts.on("--invalid-employees N", Integer, "How many of those employees should be invalid") { |v| options[:invalid_employees] = v }
+  end
+
+  if argv.empty?
+    puts parser.help
+    exit
+  end
+
+  parser.parse!(argv)
+
+  missing = REQUIRED_OPTIONS - options.keys
+  if missing.any?
+    flags = missing.map { |option| "--#{option.to_s.tr('_', '-')}" }.join(", ")
+    abort "Missing required argument(s): #{flags}"
+  end
+
+  if options[:invalid_employees] > options[:employees]
+    abort "--invalid-employees (#{options[:invalid_employees]}) can't exceed --employees (#{options[:employees]})"
+  end
+
+  options
+end
+
+def generate_exchange_rates(count)
+  required_currencies = COUNTRY_CURRENCIES.values.uniq
+  extra_currencies = (CURRENCY_CODES - required_currencies).sample([ count - required_currencies.size, 0 ].max)
+
+  (required_currencies + extra_currencies).map do |currency|
+    { currency: currency, rate: Faker::Number.decimal(l_digits: 1, r_digits: 6), last_synced_at: Time.current }
+  end
+end
+
+def generate_valid_employee(sequence)
+  country = COUNTRIES.sample
+
+  {
+    employee_code: format("EMP%06d", sequence),
+    full_name: Faker::Name.name,
+    job_title: JOB_TITLES.sample,
+    department: DEPARTMENTS.sample,
+    country: country,
+    local_salary: Faker::Number.between(from: 30_000, to: 250_000),
+    currency: COUNTRY_CURRENCIES.fetch(country)
+  }
+end
+
+def generate_invalid_employee(kind, valid_employee_codes, sequence)
+  row = generate_valid_employee(sequence)
+
+  case kind
+  when :blank_full_name then row[:full_name] = ""
+  when :blank_employee_code then row[:employee_code] = ""
+  when :duplicate_employee_code then row[:employee_code] = valid_employee_codes.sample
+  when :unsupported_currency then row[:currency] = "ZZZ"
+  when :blank_local_salary then row[:local_salary] = ""
+  end
+
+  row
+end
+
+options = parse_options(ARGV)
+exchange_rate_count = options[:exchange_rates]
+employee_count = options[:employees]
+invalid_count = options[:invalid_employees]
+
+exchange_rates = generate_exchange_rates(exchange_rate_count)
+
+valid_count = employee_count - invalid_count
+sequence = 0
+
+valid_employees = Array.new(valid_count) do
+  sequence += 1
+  generate_valid_employee(sequence)
+end
+
+valid_employee_codes = valid_employees.map { |row| row[:employee_code] }
+
+invalid_employees = Array.new(invalid_count) do |index|
+  sequence += 1
+  kind = INVALID_CASES[index % INVALID_CASES.size]
+  generate_invalid_employee(kind, valid_employee_codes, sequence)
+end
+
+employees = (valid_employees + invalid_employees).shuffle
+
+output_dir = Rails.root.join("db/seed_data")
+FileUtils.mkdir_p(output_dir)
+
+exchange_rates_csv = output_dir.join("exchange_rates.csv")
+employees_csv = output_dir.join("employees.csv")
+
+CSV.open(exchange_rates_csv, "w") do |csv|
+  csv << %w[currency rate last_synced_at]
+  exchange_rates.each { |row| csv << [ row[:currency], row[:rate], row[:last_synced_at] ] }
+end
+
+CSV.open(employees_csv, "w") do |csv|
+  csv << EMPLOYEE_HEADERS
+  employees.each { |row| csv << row.values_at(*EMPLOYEE_HEADERS.map(&:to_sym)) }
+end
+
+puts "Wrote #{exchange_rates.size} exchange rates to #{exchange_rates_csv}"
+puts "Wrote #{employees.size} employees (#{valid_count} valid, #{invalid_count} invalid) to #{employees_csv}"

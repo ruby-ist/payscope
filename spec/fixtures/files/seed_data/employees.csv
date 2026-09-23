@@ -1,0 +1,9 @@
+employee_code,full_name,job_title,department,country,local_salary,currency
+EMP001,Ada Lovelace,Engineer,Engineering,USA,50000,USD
+EMP002,Grace Hopper,Analyst,Finance,USA,60000,EUR
+EMP003,Alan Turing,Researcher,R&D,UK,70000,GBP
+,Blank Code Employee,Clerk,Ops,USA,40000,USD
+EMP005,,Clerk,Ops,USA,40000,USD
+EMP001,Duplicate Code,Clerk,Ops,USA,40000,USD
+EMP006,Unknown Currency,Clerk,Ops,USA,40000,ZZZ
+EMP007,Blank Salary,Clerk,Ops,USA,,USD

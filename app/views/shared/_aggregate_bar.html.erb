@@ -13,7 +13,7 @@
   <% cards.each do |card| %>
     <div class="min-w-32 flex-1 shrink-0 snap-start rounded-md border border-border bg-surface px-3 py-2">
       <p class="text-sm uppercase tracking-wide text-text-muted"><%= card[:label] %></p>
-      <p class="numeric text-lg py-4"><%= card[:value] %></p>
+      <p class="numeric py-4"><%= card[:value] %></p>
 
       <% if card.key?(:showing) %>
         <p class="text-xs text-text-muted" data-controller="page-range"
