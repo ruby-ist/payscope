@@ -69,28 +69,28 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#usd_amount' do
+  describe '#aggregated_amount' do
     context 'when the value is nil' do
-      subject(:usd_amount) { helper.usd_amount(nil) }
+      subject(:aggregated_amount) { helper.aggregated_amount(nil) }
 
       it 'renders an em dash placeholder' do
-        expect(usd_amount).to include('—')
+        expect(aggregated_amount).to include('—')
       end
 
       it 'applies the muted text class' do
-        expect(usd_amount).to include('text-text-muted')
+        expect(aggregated_amount).to include('text-text-muted')
       end
     end
 
     context 'when the value is present' do
-      subject(:usd_amount) { helper.usd_amount(85_000) }
+      subject(:aggregated_amount) { helper.aggregated_amount(85_000) }
 
       it 'formats the amount with two decimal places and a thousands delimiter' do
-        expect(usd_amount).to include('85,000.00')
+        expect(aggregated_amount).to include('85,000.00')
       end
 
       it 'labels the amount as USD' do
-        expect(usd_amount).to include('USD')
+        expect(aggregated_amount).to include('USD')
       end
     end
   end

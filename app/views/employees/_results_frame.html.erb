@@ -5,7 +5,7 @@
 %>
 <%= turbo_frame_tag "employee_results", class: "block" do %>
   <% if @sidebar_data_loaded %>
-    <%= render "shared/aggregate_bar", summary: @salary_summary, pagy: @pagy %>
+    <%= render "shared/aggregate_bar", summary: @salary_summary, pagy: @pagy, currency: @summary_currency %>
   <% end %>
 
   <div class="md:grid md:grid-cols-[22rem_minmax(0,1fr)] md:items-start md:gap-6">

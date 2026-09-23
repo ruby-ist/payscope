@@ -1,9 +1,10 @@
 <%
+  currency = local_assigns[:currency] || "USD"
   cards = [
-    { label: "Min", value: usd_amount(summary[:min]) },
-    { label: "Max", value: usd_amount(summary[:max]) },
-    { label: "Avg", value: usd_amount(summary[:avg]) },
-    { label: "Sum", value: usd_amount(summary[:sum]) },
+    { label: "Min", value: aggregated_amount(summary[:min], currency: currency) },
+    { label: "Max", value: aggregated_amount(summary[:max], currency: currency) },
+    { label: "Avg", value: aggregated_amount(summary[:avg], currency: currency) },
+    { label: "Sum", value: aggregated_amount(summary[:sum], currency: currency) },
     { label: "Count", value: number_with_delimiter(summary[:count]), showing: page_showing(pagy) },
   ]
 %>

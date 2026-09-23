@@ -90,4 +90,25 @@ RSpec.describe Employee::SalaryAggregationService do
       expect(summary[:avg]).to be_nil
     end
   end
+
+  describe 'aggregating a different column' do
+    subject(:summary) { described_class.new(scope, column: :local_salary).aggregate_summary }
+
+    let(:exchange_rate) { create(:exchange_rate, rate: 2) }
+
+    before do
+      create(:employee, exchange_rate: exchange_rate, local_salary: 50_000)
+      create(:employee, exchange_rate: exchange_rate, local_salary: 150_000)
+    end
+
+    it 'aggregates local_salary rather than normalized_usd_salary' do
+      expect(summary[:sum]).to eq(200_000)
+    end
+  end
+
+  describe 'an unsupported column' do
+    it 'raises rather than building an unvalidated SQL fragment' do
+      expect { described_class.new(scope, column: :full_name) }.to raise_error(ArgumentError)
+    end
+  end
 end

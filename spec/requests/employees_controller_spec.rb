@@ -199,6 +199,47 @@ RSpec.describe EmployeesController do
         end
       end
 
+      context 'with a currency filter applied' do
+        let(:eur_rate) { create(:exchange_rate, currency: 'EUR', rate: 2) }
+
+        before do
+          create(:employee, exchange_rate: eur_rate, local_salary: 100_000)
+          get employees_path(exchange_rate_id: eur_rate.id)
+        end
+
+        it 'aggregates local_salary rather than normalized_usd_salary' do
+          bar = Nokogiri::HTML(response.body).at_css('[data-aggregate-bar]')
+          expect(bar.text).not_to include('200,000.00')
+        end
+
+        it 'labels the aggregate amounts with the filtered currency' do
+          bar = Nokogiri::HTML(response.body).at_css('[data-aggregate-bar]')
+          expect(bar.text).to include('EUR')
+        end
+      end
+
+      context 'without a currency filter' do
+        before { get employees_path }
+
+        it 'labels the aggregate amounts as USD' do
+          bar = Nokogiri::HTML(response.body).at_css('[data-aggregate-bar]')
+          expect(bar.text).to include('USD')
+        end
+      end
+
+      context 'with an invalid currency filter applied' do
+        before { get employees_path(exchange_rate_id: 'invalid_id') }
+
+        it 'returns http success' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'does not label as there will be no aggregate amount for invalid currency' do
+          bar = Nokogiri::HTML(response.body).at_css('[data-aggregate-bar]')
+          expect(bar.text).to include('—')
+        end
+      end
+
       context 'with a sort applied' do
         before { get employees_path(sort_by: 'full_name', sort_dir: 'desc') }
 

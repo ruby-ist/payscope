@@ -20,11 +20,11 @@ module ApplicationHelper
             aria: { current: ("page" if active) }
   end
 
-  def usd_amount(value)
+  def aggregated_amount(value, currency: "USD")
     return tag.span("—", class: "text-text-muted") if value.nil?
 
     safe_join([ number_with_precision(value, precision: 2, delimiter: ","),
-                tag.span("USD", class: "text-text-muted") ], "\u00A0")
+                tag.span(currency, class: "text-text-muted") ], "\u00A0")
   end
 
   # Clips overflowing text while keeping the full value available to mouse users

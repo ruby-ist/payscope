@@ -55,9 +55,20 @@ class EmployeesController < ApplicationController
   end
 
   def load_sidebar_data(employees)
-    @salary_summary = Employee::SalaryAggregationService.new(employees).aggregate_summary
     @exchange_rates = ExchangeRate.order(:currency)
+    @summary_currency = filtered_currency
+    @salary_summary = Employee::SalaryAggregationService.new(employees, column: aggregate_column).aggregate_summary
     @sidebar_data_loaded = true
+  end
+
+  def filtered_currency
+    return if params[:exchange_rate_id].blank?
+
+    @exchange_rates.find { |rate| rate.id.to_s == params[:exchange_rate_id] }&.currency
+  end
+
+  def aggregate_column
+    @summary_currency ? :local_salary : :normalized_usd_salary
   end
 
   def listing_params
