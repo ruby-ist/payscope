@@ -1,5 +1,7 @@
 # Payscope
 
+Live at **[https://acme-payscope.onrender.com](https://acme-payscope.onrender.com)**.
+
 Payscope is a web-based employee salary management application built for a single HR manager overseeing a database of 10,000+ employees. It replaces manual spreadsheet workflows with:
 
 - An **employee listing** page with search/filter across department, country, job title, currency, and salary/date ranges, plus a live aggregate bar (min/max/avg/count/sum) that reflects the active filter set.
@@ -8,6 +10,18 @@ Payscope is a web-based employee salary management application built for a singl
 - Background recalculation: editing an exchange rate enqueues a job that recomputes `normalized_usd_salary` for every employee in that currency, so the request isn't blocked on it.
 
 See [`docs/requirements.md`](docs/requirements.md) for the full functional spec.
+
+## Screenshots
+
+| Employee listing | Edit employee |
+| --- | --- |
+| ![Employee listing](public/preview/employees-listing.png) | ![Edit employee](public/preview/employee-edit.png) |
+
+| Exchange rates | Dashboard — pie chart |
+| --- | --- |
+| ![Exchange rates](public/preview/exchange-rates.png) | ![Dashboard pie chart](public/preview/dashboard-pie-chart.png) |
+
+![Dashboard — bar chart](public/preview/dashboard-bar-chart.png)
 
 ## Tech stack
 
@@ -78,8 +92,8 @@ bundle exec rspec                                                   # test suite
 - [`docs/requirements.md`](docs/requirements.md) — the original functional requirements: product goal and scope, core features (listing page, dashboard, CRUD, async recalculation), and the data schema/architecture the app was built against.
 - [`docs/planning.md`](docs/planning.md) — the step-by-step build plan and to-do list, from initial models through the current "Code Optimization and Feature Improvements" step. Each completed step links out to a corresponding file in `docs/plans/`.
 - [`docs/plans/`](docs/plans/) — one detailed implementation plan per step in `planning.md`, numbered to match (`1_create_tables_and_models.md` through `8_write_a_script_to_seed_the_database.md`). Each describes the approach taken for that step before/while it was built — data model decisions, service boundaries, testing strategy, etc.
-- [`docs/design_notes.md`](docs/design_notes.md) — a living visual/interaction design spec, describing the UI *as currently implemented* (color tokens, typography, component patterns, per-page layout decisions, and the reasoning behind non-obvious choices). Application code refers back to specific sections via `§N` comments (e.g. `docs/design_notes.md §8`), so this file should stay in sync with the UI rather than frozen at time of writing, unlike the point-in-time plans in `docs/plans/`.
-- [`docs/decisions.md`](docs/decisions.md) — the *why* behind architecture/process choices that aren't self-evident from the code, including ones that intentionally depart from `docs/requirements.md` (e.g. `employee.currency` becoming a foreign key instead of a column, CockroachDB in production).
+- [`docs/design_notes.md`](docs/design_notes.md) — a living visual/interaction design spec, describing the UI _as currently implemented_ (color tokens, typography, component patterns, per-page layout decisions, and the reasoning behind non-obvious choices). Application code refers back to specific sections via `§N` comments (e.g. `docs/design_notes.md §8`), so this file should stay in sync with the UI rather than frozen at time of writing, unlike the point-in-time plans in `docs/plans/`.
+- [`docs/decisions.md`](docs/decisions.md) — the _why_ behind architecture/process choices that aren't self-evident from the code, including ones that intentionally depart from `docs/requirements.md` (e.g. `employee.currency` becoming a foreign key instead of a column, CockroachDB in production).
 
 ## Deployment
 
