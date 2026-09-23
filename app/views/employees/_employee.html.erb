@@ -64,8 +64,10 @@
       <%= icon_label "pencil", "Edit" %>
     <% end %>
 
-    <%= button_to employee_path(employee), method: :delete, class: "btn-destructive w-full justify-center",
-                  form: { class: "flex" },
+    <%# Carries the current filter/sort/page along, so deleting a row doesn't
+        silently drop back to the unfiltered first page. %>
+    <%= button_to employee_path(employee, request.query_parameters), method: :delete,
+                  class: "btn-destructive w-full justify-center", form: { class: "flex" },
                   data: { turbo_confirm: "Are you sure you want to delete this employee?" } do %>
       <%= icon_label "trash_2", "Delete" %>
     <% end %>

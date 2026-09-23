@@ -27,9 +27,14 @@ RSpec.describe EmployeesController do
     context 'when there are no exchange rates yet' do
       before { get employees_path }
 
-      it 'disables the "New employee" button with an explanatory aria-label' do
+      it 'marks the "New employee" button as disabled with an explanatory aria-label' do
         button = Nokogiri::HTML(response.body).at_css('button[aria-label="Create an exchange rate first"]')
-        expect(button['disabled']).to eq('disabled')
+        expect(button['aria-disabled']).to eq('true')
+      end
+
+      it 'gives the "New employee" button a hover tooltip explaining why' do
+        button = Nokogiri::HTML(response.body).at_css('button[aria-label="Create an exchange rate first"]')
+        expect(button['title']).to eq('Create an exchange rate first')
       end
     end
 
@@ -482,8 +487,12 @@ RSpec.describe EmployeesController do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'includes a turbo-stream remove action targeting the employee row' do
-        expect(response.body).to include(%(action="remove" target="#{ActionView::RecordIdentifier.dom_id(employee)}"))
+      it 'replaces the whole results frame, not just the row' do
+        expect(response.body).to include('action="replace" target="employee_results"')
+      end
+
+      it 'no longer renders the deleted employee' do
+        expect(response.body).not_to include(employee.employee_code)
       end
 
       it 'updates the flash with the deletion notice' do
@@ -493,6 +502,22 @@ RSpec.describe EmployeesController do
       it 'removes the employee' do
         expect(Employee.exists?(employee.id)).to be(false)
       end
+
+      it 'shows the empty state instead of a stale pagination nav' do
+        expect(response.body).to include('No employees yet.')
+      end
+    end
+
+    context 'with turbo_stream format when other employees remain' do
+      before do
+        create(:employee)
+        delete employee_path(employee), as: :turbo_stream
+      end
+
+      it 'refreshes the aggregate count to reflect the remaining employees' do
+        values = Nokogiri::HTML(response.body).css('.numeric.py-4').map(&:text)
+        expect(values.last).to eq('1')
+      end
     end
 
     context 'with an unknown id' do
@@ -501,6 +526,17 @@ RSpec.describe EmployeesController do
       it 'redirects to the employees index' do
         expect(response).to redirect_to(employees_path)
       end
+    end
+  end
+
+  describe "the delete button's form action" do
+    let!(:employee) { create(:employee) }
+
+    before { get employees_path(sort_by: 'employee_code', sort_dir: 'desc') }
+
+    it 'carries the current sort along, so deleting a row keeps the listing in place' do
+      form = Nokogiri::HTML(response.body).at_css("form[action*='/employees/#{employee.id}']")
+      expect(form['action']).to include('sort_by=employee_code')
     end
   end
 end

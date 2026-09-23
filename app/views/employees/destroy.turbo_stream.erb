@@ -1,2 +1,5 @@
-<%= turbo_stream.remove @employee %>
 <%= turbo_stream.replace "flash", partial: "shared/flash" %>
+
+<%# Replacing the whole results frame — not just removing the row — keeps the
+    aggregate bar, pagination nav and empty state all in sync with the delete. %>
+<%= turbo_stream.replace "employee_results", partial: "employees/results_frame" %>

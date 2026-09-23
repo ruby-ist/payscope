@@ -2,10 +2,7 @@ class EmployeesController < ApplicationController
   before_action :set_employee, only: %i[edit update destroy]
 
   def index
-    filtered = Employee::FilterService.new(listing_params).filter_employees
-    employees = Employee::SortService.new(listing_params).sort_employees(filtered)
-    @pagy, @employees = pagy(employees.includes(:exchange_rate))
-    load_sidebar_data(employees) unless list_frame_request?
+    load_employee_results
   end
 
   def new
@@ -37,11 +34,21 @@ class EmployeesController < ApplicationController
     notice = "Employee deleted."
     respond_to do |format|
       format.html { redirect_to employees_path, notice: notice }
-      format.turbo_stream { flash.now[:notice] = notice }
+      format.turbo_stream do
+        flash.now[:notice] = notice
+        load_employee_results(load_sidebar: true)
+      end
     end
   end
 
   private
+
+  def load_employee_results(load_sidebar: !list_frame_request?)
+    filtered = Employee::FilterService.new(listing_params).filter_employees
+    employees = Employee::SortService.new(listing_params).sort_employees(filtered)
+    @pagy, @employees = pagy(employees.includes(:exchange_rate))
+    load_sidebar_data(employees) if load_sidebar
+  end
 
   def list_frame_request?
     turbo_frame_request_id == "employee_list"

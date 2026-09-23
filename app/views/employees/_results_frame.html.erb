@@ -1,0 +1,54 @@
+<%#
+  Rendered by both index and the destroy turbo_stream response, so a delete can
+  refresh the aggregate bar and empty state along with the row — not just remove
+  the one row and leave a stale pagination nav / summary behind.
+%>
+<%= turbo_frame_tag "employee_results", class: "block" do %>
+  <% if @sidebar_data_loaded %>
+    <%= render "shared/aggregate_bar", summary: @salary_summary, pagy: @pagy %>
+  <% end %>
+
+  <div class="md:grid md:grid-cols-[22rem_minmax(0,1fr)] md:items-start md:gap-6">
+    <% if @sidebar_data_loaded %>
+      <aside data-filter-sidebar class="hidden rounded-md border border-border bg-surface p-4 md:block">
+        <h2 class="mb-4 text-lg font-semibold text-nav-bg">Filters</h2>
+        <%= render "employees/filters", form_id: "employee_filters", exchange_rates: @exchange_rates, sort_field: false %>
+      </aside>
+    <% end %>
+
+    <section>
+      <%= turbo_frame_tag "employee_list", class: "block" do %>
+        <% if @employees.any? %>
+          <div class="rounded-t-md border-x border-t border-border bg-surface">
+            <%= render "pagy/nav", pagy: @pagy %>
+          </div>
+        <% end %>
+
+        <div id="employees" class="flex flex-col" data-page-range="<%= page_showing(@pagy) %>">
+          <%= render @employees %>
+        </div>
+
+        <% if @employees.any? %>
+          <div class="rounded-b-md border-x border-b border-t border-border bg-surface">
+            <%= render "pagy/nav", pagy: @pagy %>
+          </div>
+        <% elsif @pagy.count.positive? %>
+          <%# Records exist, just not on the requested page — don't claim the
+              table is empty. %>
+          <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
+            No employees on this page.
+            <%= link_to "Back to the first page", employees_path, class: "text-primary hover:text-primary-hover" %>
+          </p>
+        <% elsif filters_applied? %>
+          <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
+            No employees match these filters.
+          </p>
+        <% else %>
+          <p class="rounded-md border border-border bg-surface px-4 py-10 text-center text-sm text-text-muted">
+            No employees yet.
+          </p>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+<% end %>
