@@ -88,6 +88,10 @@ RSpec.describe ExchangeRatesController do
       it 'persists the exchange rate' do
         expect(ExchangeRate.count).to eq(1)
       end
+
+      it 'removes the empty-state placeholder' do
+        expect(response.body).to include('action="remove" target="no_exchange_rates"')
+      end
     end
 
     context 'with invalid params and html format' do
@@ -264,6 +268,10 @@ RSpec.describe ExchangeRatesController do
 
       it 'removes the exchange rate' do
         expect(ExchangeRate.exists?(exchange_rate.id)).to be(false)
+      end
+
+      it 'brings back the empty-state placeholder' do
+        expect(response.body).to include('No exchange rates yet.')
       end
     end
 

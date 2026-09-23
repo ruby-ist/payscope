@@ -1,2 +1,6 @@
 <%= turbo_stream.remove @exchange_rate %>
 <%= turbo_stream.replace "flash", partial: "shared/flash" %>
+
+<% if ExchangeRate.none? %>
+  <%= turbo_stream.after "exchange_rates", partial: "exchange_rates/empty_state" %>
+<% end %>

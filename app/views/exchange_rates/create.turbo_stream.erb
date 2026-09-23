@@ -1,6 +1,8 @@
 <%= turbo_stream.replace "flash", partial: "shared/flash" %>
 
 <% if @exchange_rate.persisted? %>
+  <%= turbo_stream.remove "no_exchange_rates" %>
+
   <%= turbo_stream.append "exchange_rates", partial: "exchange_rates/rate_frame",
                           locals: { exchange_rate: @exchange_rate, editing: false } %>
 
