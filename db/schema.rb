@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema[8.1].define(version: 2026_09_22_094500) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_catalog.plpgsql" unless Rails.env.production?
 
   create_table "employees", force: :cascade do |t|
     t.string "country", null: false

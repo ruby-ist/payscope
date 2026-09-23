@@ -4,8 +4,6 @@ source "https://rubygems.org"
 gem "rails", "~> 8.1.3", ">= 8.1.3.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
-# Use postgresql as the database for Active Record
-gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -69,6 +67,9 @@ group :development, :test do
 
   # For TDD
   gem "rspec-rails"
+
+  # Use postgresql as the database for Active Record
+  gem "pg", "~> 1.1"
 end
 
 group :test do
@@ -85,4 +86,9 @@ group :development do
 
   # Generates realistic fake data for the seed data generator script
   gem "faker"
+end
+
+group :production do
+  # Use CockroachDB as the database for Active Record
+  gem "activerecord-cockroachdb-adapter"
 end
