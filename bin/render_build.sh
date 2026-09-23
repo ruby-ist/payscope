@@ -9,5 +9,6 @@ mkdir -p "$HOME/.postgresql" && curl -o "$HOME/.postgresql/root.crt" "https://co
 bundle exec rake db:migrate
 
 # steps to seed the database
+gem install faker
 script/generate_seed_data --exchange-rates 8 --employees 10100 --invalid-employees 100
 rails db:seed
