@@ -17,7 +17,7 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
-  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 2 } %>
 
   # host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
   # port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
@@ -91,5 +91,5 @@ test:
 production:
   adapter: cockroachdb
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 2 } %>
   url: <%= ENV["DATABASE_URL"] %>
