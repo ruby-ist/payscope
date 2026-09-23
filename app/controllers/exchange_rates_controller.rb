@@ -62,9 +62,22 @@ class ExchangeRatesController < ApplicationController
       format.html { redirect_to exchange_rates_path, notice: notice }
       format.turbo_stream { flash.now[:notice] = notice }
     end
+  rescue ActiveRecord::InvalidForeignKey
+    render_delete_blocked
   end
 
   private
+
+  def render_delete_blocked
+    alert = "Can't delete #{@exchange_rate.currency}: employees are still using it."
+    respond_to do |format|
+      format.html { redirect_to exchange_rates_path, alert: alert, status: :see_other }
+      format.turbo_stream do
+        flash.now[:alert] = alert
+        render turbo_stream: turbo_stream.replace("flash", partial: "shared/flash"), status: :unprocessable_entity
+      end
+    end
+  end
 
   def set_exchange_rate
     @exchange_rate = ExchangeRate.find_by(id: params[:id])

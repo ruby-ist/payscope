@@ -7,9 +7,8 @@
      <%# inset-x-0 + mx-auto centres the fixed container without a transform. %>
      class="pointer-events-none fixed inset-x-0 top-26 z-50 mx-auto flex w-80 max-w-[calc(100vw-2rem)] flex-col gap-2">
   <% if notice.present? %>
-    <div data-controller="flash" class="pointer-events-auto flex items-start gap-2 rounded-md border border-primary bg-surface px-4 py-3 text-sm shadow-lg">
-      <%= icon "check", css_class: "mt-0.5 size-4 shrink-0 text-primary" %>
-      <p id="notice" class="flex-1"><%= notice %></p>
+    <div data-controller="flash" class="pointer-events-auto flex items-start gap-2 rounded-md border border-success bg-surface px-4 py-3 text-sm shadow-lg">
+      <p id="notice" class="flex-1 text-success"><%= notice %></p>
 
       <button type="button" class="shrink-0 text-text-muted hover:text-text" data-action="flash#dismiss">
         <%= icon "x" %>
@@ -19,9 +18,8 @@
   <% end %>
 
   <% if alert.present? %>
-    <div data-controller="flash" class="pointer-events-auto flex items-start gap-2 rounded-md border border-destructive bg-surface px-4 py-3 text-sm shadow-lg">
-      <%= icon "x", css_class: "mt-0.5 size-4 shrink-0 text-destructive" %>
-      <p id="alert" class="flex-1 text-destructive"><%= alert %></p>
+    <div data-controller="flash" class="pointer-events-auto flex items-start gap-2 rounded-md border border-error bg-surface px-4 py-3 text-sm shadow-lg">
+      <p id="alert" class="flex-1 text-error"><%= alert %></p>
 
       <button type="button" class="shrink-0 text-text-muted hover:text-text" data-action="flash#dismiss">
         <%= icon "x" %>

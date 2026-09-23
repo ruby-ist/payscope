@@ -21,7 +21,7 @@
 
     <%= button_to exchange_rate_path(exchange_rate), method: :delete, class: "btn-destructive",
                   form: { class: "inline-block" },
-                  data: { turbo_confirm: "Deleting this rate may affect employees using it. Are you sure?" } do %>
+                  data: { turbo_confirm: "Are you sure you want to delete this exchange rate?" } do %>
       <%= icon_label "trash_2", "Delete" %>
     <% end %>
   </div>

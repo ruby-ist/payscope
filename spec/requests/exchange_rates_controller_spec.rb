@@ -301,5 +301,45 @@ RSpec.describe ExchangeRatesController do
         expect(response).to redirect_to(exchange_rates_path)
       end
     end
+
+    context 'when employees still reference the exchange rate' do
+      before { create(:employee, exchange_rate: exchange_rate) }
+
+      context 'with html format' do
+        before { delete exchange_rate_path(exchange_rate) }
+
+        it 'redirects to the exchange rates index' do
+          expect(response).to redirect_to(exchange_rates_path)
+        end
+
+        it 'sets a meaningful alert instead of raising' do
+          expect(flash[:alert]).to eq("Can't delete #{exchange_rate.currency}: employees are still using it.")
+        end
+
+        it 'does not remove the exchange rate' do
+          expect(ExchangeRate.exists?(exchange_rate.id)).to be(true)
+        end
+      end
+
+      context 'with turbo_stream format' do
+        before { delete exchange_rate_path(exchange_rate), as: :turbo_stream }
+
+        it 'returns http unprocessable_entity' do
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it 'includes the alert text in the body' do
+          expect(response.body).to include("Can&#39;t delete #{exchange_rate.currency}: employees are still using it.")
+        end
+
+        it 'does not include a turbo-stream remove action for the rate row' do
+          expect(response.body).not_to include(%(action="remove" target="#{ActionView::RecordIdentifier.dom_id(exchange_rate)}"))
+        end
+
+        it 'does not remove the exchange rate' do
+          expect(ExchangeRate.exists?(exchange_rate.id)).to be(true)
+        end
+      end
+    end
   end
 end

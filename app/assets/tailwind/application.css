@@ -12,6 +12,8 @@
   --ledger-border: #d3e6e4;
   --ledger-text: #10292c;
   --ledger-text-muted: #5c7c7a;
+  --ledger-success: #15803d;
+  --ledger-error: #dc2626;
 
   --ledger-nav-bg: #0e3b2e;
   --ledger-nav-border: #175040;
@@ -30,6 +32,8 @@
   --color-text: var(--ledger-text);
   --color-text-muted: var(--ledger-text-muted);
   --color-destructive: var(--ledger-primary-hover);
+  --color-success: var(--ledger-success);
+  --color-error: var(--ledger-error);
 
   --color-nav-bg: var(--ledger-nav-bg);
   --color-nav-border: var(--ledger-nav-border);

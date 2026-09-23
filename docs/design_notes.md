@@ -25,6 +25,8 @@ No dark mode — one fixed theme. Raw values sit on `:root` as `--ledger-*`; `@t
 | `--color-text`           | `#10292C` | Primary text                                                    |
 | `--color-text-muted`     | `#5C7C7A` | Secondary text, field labels                                    |
 | `--color-destructive`    | `#E85742` | Delete actions — currently aliases `--ledger-primary-hover`     |
+| `--color-success`        | `#15803D` | Flash notice border/icon/text only                              |
+| `--color-error`          | `#DC2626` | Flash alert border/icon/text only                               |
 | `--color-nav-bg`         | `#0E3B2E` | Navbar band, and page `<h1>` colour                             |
 | `--color-nav-border`     | `#175040` | Navbar bottom rule                                              |
 | `--color-nav-text`       | `#9FC4B8` | Navbar inactive links                                           |
@@ -43,6 +45,10 @@ These are no longer separated by hue — `--color-destructive` points at the sam
 - **Destructive** (Delete): outlined — `--color-destructive` text and border on `--color-surface` — filling solid only on hover, as an "arming" cue just before the `turbo_confirm` dialog.
 
 Delete is therefore never signalled by colour alone: outline styling, a trash icon and a confirm dialog are three redundant cues.
+
+### Flash is the one deliberate exception to the one-hue rule
+
+§1's "two real hues" discipline and `destructive`-aliases-`primary-hover` both stop at the flash toast (§10). A toast is a status report shown *after* the action already happened, not another actionable control competing for the coral accent — red/green there reads as "succeeded/failed" the instant it appears, without reading the text. `--color-success` / `--color-error` are scoped to that one component; nothing else should reach for them.
 
 ### Scope of the `nav-*` tokens
 
@@ -190,13 +196,15 @@ Rows stripe with `even:bg-surface-alt` like the employee list. The striping clas
 
 > **Implementation trap, hit twice:** the edited row must render the errored object, not the equal-by-id member of `@exchange_rates`. That collection is a fresh query, so its rows carry no validation errors — passing one to the form silently drops both the error message and the user's rejected input while still appearing to toggle correctly. There is a spec guarding this.
 
+**Deleting a rate still referenced by employees.** `employees.exchange_rate_id` is a DB-level `add_foreign_key` with no `on_delete`, so Postgres — not a Rails validation — rejects the delete, raising `ActiveRecord::InvalidForeignKey`. `ExchangeRatesController#destroy` rescues it and reports a plain-language alert instead of a 500 page; the row is never removed from the DOM in that case (the turbo_stream response only replaces the flash, not the frame), since the record genuinely wasn't deleted.
+
 ---
 
 ## 10. Flash Messages
 
 Flash is a floating toast, deliberately outside the document flow so showing one never shifts the page: a `fixed` container, top-centred via `inset-x-0 mx-auto` (centred without a `transform`, which would otherwise become a containing block for descendants). It renders outside `<main>` for the same reason.
 
-- `notice` is bordered in primary with a `check` icon; `alert` in destructive with an `x`.
+- `notice` is bordered in `--color-success` (green) with a `check` icon; `alert` in `--color-error` (red) with an `x` — border, icon and text all take the same colour. This is the one place the app breaks its own one-hue rule (§2).
 - Each toast has a dismiss control; `flash_controller.js` removes just that toast.
 - `pointer-events-none` on the container with `pointer-events-auto` on each toast, so the empty container never swallows clicks on the page beneath it.
 - `role="status" aria-live="polite"`. Caveat: the stream replaces the live-region node itself, so announcement on turbo_stream updates isn't guaranteed — reliable announcing would need a permanent region with only its children swapped.

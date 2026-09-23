@@ -18,6 +18,19 @@ RSpec.describe EmployeesController do
       it 'lists the employee' do
         expect(response.body).to include(employee.employee_code)
       end
+
+      it 'offers a working "New employee" link' do
+        expect(response.body).to include(%(href="#{new_employee_path}"))
+      end
+    end
+
+    context 'when there are no exchange rates yet' do
+      before { get employees_path }
+
+      it 'disables the "New employee" button with an explanatory aria-label' do
+        button = Nokogiri::HTML(response.body).at_css('button[aria-label="Create an exchange rate first"]')
+        expect(button['disabled']).to eq('disabled')
+      end
     end
 
     context 'with more records than fit on one page' do

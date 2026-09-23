@@ -33,10 +33,17 @@
             </button>
           </div>
         </div>
-      <% end %>
 
-      <%= link_to new_employee_path, class: "btn-primary" do %>
-        <%= icon_label "plus_circle", "New employee" %>
+        <% if @exchange_rates.none? %>
+          <button type="button" disabled aria-label="Create an exchange rate first"
+                  class="btn-primary disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-primary">
+            <%= icon_label "plus_circle", "New employee" %>
+          </button>
+        <% else %>
+          <%= link_to new_employee_path, class: "btn-primary" do %>
+            <%= icon_label "plus_circle", "New employee" %>
+          <% end %>
+        <% end %>
       <% end %>
     </div>
   </div>
