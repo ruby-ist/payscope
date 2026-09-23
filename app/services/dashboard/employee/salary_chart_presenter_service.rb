@@ -7,6 +7,10 @@ module Dashboard
         "sum" => "Sum salary (USD)",
         "count" => "Count"
       }.freeze
+      # Shared by both the title and the series so they can't drift apart —
+      # the legend now lives on the right, so "center" means over the pie
+      # itself, not the middle of the whole chart area.
+      PIE_CENTER_X = "40%".freeze
 
       def initialize(breakdown, aggregation, group_by, chart_type)
         @breakdown = breakdown
@@ -23,10 +27,11 @@ module Dashboard
 
       def pie_config
         {
-          title: { text: PIE_TITLES.fetch(@aggregation, @aggregation.capitalize), left: "center", top: 10 },
+          title: { text: PIE_TITLES.fetch(@aggregation, @aggregation.capitalize), left: PIE_CENTER_X,
+                    textAlign: "center", top: 10 },
           tooltip: { trigger: "item" },
-          legend: { bottom: 10 },
-          series: [ { name: @aggregation.capitalize, type: "pie", radius: "60%", center: [ "50%", "45%" ],
+          legend: { orient: "vertical", right: 10, top: "middle" },
+          series: [ { name: @aggregation.capitalize, type: "pie", radius: "60%", center: [ PIE_CENTER_X, "50%" ],
                       label: { show: true, formatter: "{b}: {c} ({d}%)" },
                       data: @breakdown.map { |label, value| { name: label, value: rounded(value) } } } ]
         }

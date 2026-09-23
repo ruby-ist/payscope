@@ -21,6 +21,11 @@ RSpec.describe DashboardController do
       it 'defaults to grouping by department, summed, rendered as a pie chart' do
         expect(response.body).to include('&quot;type&quot;:&quot;pie&quot;')
       end
+
+      it 'turns off autocomplete on the controls form, so a refresh cannot restore stale selections' do
+        form = Nokogiri::HTML(response.body).at_css('form[action="/dashboard"]')
+        expect(form['autocomplete']).to eq('off')
+      end
     end
 
     context 'with a bar-producing aggregation' do
@@ -33,6 +38,16 @@ RSpec.describe DashboardController do
       it 'renders the chart config as a bar series' do
         expect(response.body).to include('&quot;type&quot;:&quot;bar&quot;')
       end
+
+      it 'keeps the fixed chart height on the canvas div, not the turbo-frame tag' do
+        canvas = Nokogiri::HTML(response.body).at_css('#salary_chart [data-controller="chart"]')
+        expect(canvas['class']).to include('h-80')
+      end
+
+      it "keeps the turbo-frame tag's own class constant regardless of chart type" do
+        frame = Nokogiri::HTML(response.body).at_css('#salary_chart')
+        expect(frame['class']).to eq('block p-4')
+      end
     end
 
     context 'with a pie-producing aggregation' do
@@ -40,6 +55,16 @@ RSpec.describe DashboardController do
 
       it 'renders the chart config with name/value pairs' do
         expect(response.body).to include('&quot;name&quot;:&quot;Engineer&quot;,&quot;value&quot;:1')
+      end
+
+      it 'leaves the canvas div free to grow in JS instead of clamping its height in CSS' do
+        canvas = Nokogiri::HTML(response.body).at_css('#salary_chart [data-controller="chart"]')
+        expect(canvas['class']).not_to include('h-80')
+      end
+
+      it "keeps the turbo-frame tag's own class constant regardless of chart type" do
+        frame = Nokogiri::HTML(response.body).at_css('#salary_chart')
+        expect(frame['class']).to eq('block p-4')
       end
     end
 

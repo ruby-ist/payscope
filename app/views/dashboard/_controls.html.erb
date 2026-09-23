@@ -1,7 +1,10 @@
-<%= form_with url: dashboard_path, method: :get,
+<%# autocomplete: "off" stops the browser from restoring previously-selected
+    radios/dates on a plain refresh — these fields must reflect the current
+    params/defaults the server rendered, not whatever was last picked. %>
+<%= form_with url: dashboard_path, method: :get, html: { autocomplete: "off" },
               data: { controller: "filters", turbo_frame: "salary_chart",
                       action: "change->filters#requestSubmit submit->filters#submit" },
-              class: "space-y-8" do %>
+              class: "flex flex-wrap items-start justify-center gap-8" do %>
   <fieldset>
     <legend class="mb-2 text-sm uppercase tracking-wide text-text-muted">Group by</legend>
     <div class="segmented-control">
@@ -28,14 +31,14 @@
 
   <fieldset>
     <legend class="mb-2 text-sm uppercase tracking-wide text-text-muted">Created between</legend>
-    <div class="flex flex-wrap items-center gap-3">
-      <div>
-        <%= label_tag "created_at_from", "From", class: "mb-1 block text-sm tracking-wide text-text-muted" %>
+    <div class="flex flex-wrap items-center gap-3 mt-1">
+      <div class="flex items-center gap-2">
+        <%= label_tag "created_at_from", "From", class: "text-sm tracking-wide text-text-muted" %>
         <%= date_field_tag "created_at[from]", from, id: "created_at_from", class: "field w-40 bg-bg",
                            aria: { label: "Created on or after" } %>
       </div>
-      <div>
-        <%= label_tag "created_at_to", "Till", class: "mb-1 block text-sm tracking-wide text-text-muted" %>
+      <div class="flex items-center gap-2">
+        <%= label_tag "created_at_to", "Till", class: "text-sm tracking-wide text-text-muted" %>
         <%= date_field_tag "created_at[to]", to, id: "created_at_to", class: "field w-40 bg-bg",
                            aria: { label: "Created on or before" } %>
       </div>

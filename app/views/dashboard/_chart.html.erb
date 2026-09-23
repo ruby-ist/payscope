@@ -1,5 +1,18 @@
-<%= turbo_frame_tag "salary_chart", class: "block h-80 p-4 md:h-96" do %>
+<%
+  # Height lives on the inner div, not the turbo-frame tag: Turbo only
+  # replaces a frame's *content* on navigation, not the frame element's own
+  # attributes, so a class that depends on chart type must sit on something
+  # that actually gets swapped — otherwise switching from pie to bar can
+  # leave the old frame class in place while the new content assumes it.
+  #
+  # A pie chart's legend can outgrow the usual fixed height once it has many
+  # entries (chart_controller.js grows the inner div to fit it without
+  # wrapping into columns), so it's sized in JS instead of by a fixed class.
+  pie_chart = chart_config.dig(:series, 0, :type) == "pie"
+  inner_class = pie_chart ? "w-full" : "h-80 w-full md:h-96"
+%>
+<%= turbo_frame_tag "salary_chart", class: "block p-4" do %>
   <div data-controller="chart" data-chart-config-value="<%= chart_config.to_json %>"
-       class="h-full w-full" role="img"
+       class="<%= inner_class %>" role="img"
        aria-label="<%= aggregation.capitalize %> normalized salary by <%= group_by.humanize.downcase %>"></div>
 <% end %>

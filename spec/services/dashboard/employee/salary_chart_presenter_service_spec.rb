@@ -57,13 +57,21 @@ RSpec.describe Dashboard::Employee::SalaryChartPresenterService do
           expect(chart_config[:series].first[:label]).to eq(show: true, formatter: '{b}: {c} ({d}%)')
         end
 
-        it 'centers the pie horizontally and pulls it up toward the title' do
-          expect(chart_config[:series].first[:center]).to eq(%w[50% 45%])
+        it 'shifts the pie left to leave room for the legend on the right' do
+          expect(chart_config[:series].first[:center]).to eq(%w[40% 50%])
+        end
+
+        it 'places the legend vertically along the right edge' do
+          expect(chart_config[:legend]).to eq(orient: 'vertical', right: 10, top: 'middle')
         end
 
         it 'titles the chart to describe what the slices represent' do
           expected_title = aggregation_name == 'sum' ? 'Sum salary (USD)' : 'Count'
-          expect(chart_config[:title]).to eq(text: expected_title, left: 'center', top: 10)
+          expect(chart_config[:title]).to eq(text: expected_title, left: '40%', textAlign: 'center', top: 10)
+        end
+
+        it 'centers the title over the pie itself, not the legend-widened chart area' do
+          expect(chart_config[:title][:left]).to eq(chart_config[:series].first[:center].first)
         end
 
         context 'with a long-decimal value' do

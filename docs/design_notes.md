@@ -221,9 +221,21 @@ Two are in play, and they are not interchangeable:
 
 ---
 
-## 12. Quick Reference for Implementation
+## 12. Dashboard — Chart Layout
+
+One card, controls stacked above a full-width chart, at every viewport — no side-by-side split. Controls come first in `show.html.erb`'s source order, the `salary_chart` turbo frame second, plain vertical stacking (`mt-6` between them, no grid, no `md:order-*`). Both the frame and the canvas div are already block-level / `w-full`; the card being full-width is what actually makes the chart full-width, not anything sized on the frame itself.
+
+> **Implementation trap:** the `salary_chart` turbo-frame tag's own `class` never varies by chart type — it's a constant `"block p-4"`. Turbo Frame navigation (the controls form retargets this frame on every change) replaces the frame's *content*, not the frame element's own attributes; a class that depended on `chart_config`'s type (e.g. a height present only for bar) could survive a stale value across a pie→bar switch while the newly-swapped content assumed the new one applied. All chart-type-dependent sizing — the fixed `h-80 md:h-96` for bar, the JS-grown height for pie — lives on the inner `data-controller="chart"` div instead, which *is* unambiguously replaced on every navigation. There's a spec guarding the frame's class staying constant.
+
+**Pie legend sits on the right, vertically.** `legend: { orient: "vertical", right: 10, top: "middle" }` in `Dashboard::Employee::SalaryChartPresenterService#pie_config`. The series' `center` and the title's `left` both read from one `PIE_CENTER_X = "40%"` constant, so the title stays centered directly over the pie — not over the middle of the whole (now legend-widened) chart area — no matter how that shared value changes later. `title.left` alone only positions the title box's left edge at that x; `textAlign: "center"` is what actually centers the text around it.
+
+**Controls sit in one centered horizontal row.** `_controls.html.erb`'s form is `flex flex-wrap items-start justify-center gap-8`, not `space-y-8` — the three fieldsets (Group by, Aggregation, Created between) sit side by side rather than stacked, centered as a group, wrapping onto a new line on narrow viewports instead of overflowing. The From/To date pair inside "Created between" is one `<fieldset>`, so it's already a single flex item in that row — it doesn't need special-casing to avoid pulling apart from its own two inputs.
+
+---
+
+## 13. Quick Reference for Implementation
 
 - **Step 4 (pagination):** style controls as `.btn-neutral`; note the list panel's `first:`/`last:` rounding assumes rows are the panel's only children.
 - **Step 5 (search/aggregation):** done — fields sit in the left sidebar and drawer containers (§5), real values in the aggregate bar. The sort dropdown sits by "New employee" and joins the sidebar's form through its `form` attribute.
 - **Step 6 (normalization):** no visual work, but the employee row's Salary chip and Updated timestamp are where a recomputed value becomes visible.
-- **Step 7 (dashboard):** ECharts theming should draw from the §2 tokens rather than introducing new hex values.
+- **Step 7 (dashboard):** ECharts theming should draw from the §2 tokens rather than introducing new hex values; layout itself is §12.

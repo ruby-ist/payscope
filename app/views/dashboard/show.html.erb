@@ -1,11 +1,11 @@
 <h1 class="mb-4 text-2xl font-semibold text-nav-bg">Dashboard</h1>
 
-<div class="rounded-md border border-border bg-surface p-4 md:grid md:grid-cols-[3fr_2fr] md:items-center md:gap-6">
-  <div class="md:order-2">
+<div class="rounded-md border border-border bg-surface p-4">
+  <div>
     <%= render "dashboard/controls", group_by: @group_by, aggregation: @aggregation, from: @from, to: @to %>
   </div>
 
-  <div class="mt-6 md:order-1 md:mt-0">
+  <div class="mt-6">
     <%= render "dashboard/chart", chart_config: @chart_config, group_by: @group_by, aggregation: @aggregation %>
   </div>
 </div>
