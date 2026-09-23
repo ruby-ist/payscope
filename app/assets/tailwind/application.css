@@ -99,12 +99,21 @@
   /* Reads as "1 EUR = 0.900000 USD". The columns are fixed so a row's display
      and edit states occupy exactly the same geometry (§9) — widths are the §8
      input widths plus the input's own padding and border. The first column is
-     itself a live-calculator input in the display state (§9). */
+     itself a live-calculator input in the display state (§9). Mobile has far
+     less width to spare, so the two amount/rate columns shrink there — the
+     result column already has `overflow-x-auto` (§9) to scroll a value that
+     doesn't fit rather than clip the row. */
   .rate-equation {
     display: grid;
-    grid-template-columns: calc(12ch + 1rem + 2px) calc(4ch + 1rem + 2px) auto calc(12ch + 1rem + 2px) auto;
+    grid-template-columns: calc(8ch + 1rem + 2px) calc(4ch + 1rem + 2px) auto calc(8ch + 1rem + 2px) auto;
     align-items: center;
     gap: 0.5rem;
+  }
+
+  @media (width >= 768px) { /* matches --breakpoint-md */
+    .rate-equation {
+      grid-template-columns: calc(12ch + 1rem + 2px) calc(4ch + 1rem + 2px) auto calc(12ch + 1rem + 2px) auto;
+    }
   }
 
   /* Mirrors .field's box so a displayed value sits exactly where the input's

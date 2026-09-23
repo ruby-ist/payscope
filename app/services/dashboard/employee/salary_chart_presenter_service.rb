@@ -40,7 +40,7 @@ module Dashboard
       def bar_config
         {
           tooltip: { trigger: "axis" },
-          grid: { top: 80, right: 90, bottom: 80, left: 90, containLabel: true },
+          grid: { top: 40, right: 70, bottom: 70, left: 70, containLabel: true },
           xAxis: { type: "category", name: @group_by.humanize, nameLocation: "middle", nameGap: 75,
                    data: @breakdown.keys, axisLabel: { interval: 0, rotate: 30 } },
           yAxis: { type: "value", name: "#{@aggregation.capitalize} salary (USD)",

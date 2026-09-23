@@ -8,10 +8,10 @@
   ]
 %>
 
-<div data-aggregate-bar
-     class="-mx-4 mb-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:overflow-visible md:px-0">
+<div data-aggregate-bar class="mb-4 grid grid-cols-2 gap-2 md:flex">
   <% cards.each do |card| %>
-    <div class="min-w-32 flex-1 shrink-0 snap-start rounded-md border border-border bg-surface px-3 py-2">
+    <div class="<%= "col-span-2 mx-auto w-1/2 md:col-span-1 md:mx-0 md:w-auto" if card == cards.last %>
+                rounded-md border border-border bg-surface px-3 py-2 md:min-w-32 md:flex-1 md:shrink-0">
       <p class="text-sm uppercase tracking-wide text-text-muted"><%= card[:label] %></p>
       <p class="numeric py-4"><%= card[:value] %></p>
 

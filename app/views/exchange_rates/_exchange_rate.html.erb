@@ -1,5 +1,5 @@
 <div class="rate-row text-sm">
-  <p class="rate-equation" data-controller="rate-calculator"
+  <p class="rate-equation w-full md:w-auto" data-controller="rate-calculator"
      data-rate-calculator-rate-value="<%= exchange_rate.rate %>">
     <%= number_field_tag "amount", 1, id: dom_id(exchange_rate, "amount"), min: 0, step: "any", inputmode: "decimal",
                          autocomplete: "off", class: "field numeric w-full", aria: { label: "Amount to convert" },
@@ -10,11 +10,11 @@
     <span class="numeric text-text-muted">USD</span>
   </p>
 
-  <div class="flex flex-1 justify-center">
+  <div class="flex min-w-0 flex-1 md:justify-center">
     <%= last_synced_label(exchange_rate) %>
   </div>
 
-  <div class="flex flex-wrap items-center gap-2">
+  <div class="flex flex-wrap shrink-0 items-center gap-2">
     <%= link_to edit_exchange_rate_path(exchange_rate), class: "btn-neutral" do %>
       <%= icon_label "pencil", "Edit" %>
     <% end %>

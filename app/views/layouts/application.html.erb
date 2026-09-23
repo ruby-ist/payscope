@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="overscroll-y-none">
   <head>
     <title><%= content_for(:title) || "Payscope" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -30,13 +30,15 @@
 
   <body class="min-h-screen bg-bg font-sans text-base text-text">
     <header class="border-b border-nav-border bg-nav-bg">
-      <nav class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-6">
-        <%= link_to root_path, class: "mr-8 flex items-center" do %>
+      <nav class="mx-auto flex max-w-7xl flex-col gap-y-6 px-4 py-6 md:flex-row md:flex-wrap md:items-center md:gap-x-1 md:gap-y-2">
+        <%= link_to root_path, class: "flex items-center md:mr-8" do %>
           <%= image_tag "logo.svg", alt: "Payscope", class: "h-8 w-auto" %>
         <% end %>
-        <%= nav_link_to "Employees", employees_path, "employees" %>
-        <%= nav_link_to "Exchange Rates", exchange_rates_path, "exchange_rates" %>
-        <%= nav_link_to "Dashboard", dashboard_path, "dashboard" %>
+        <div class="flex flex-wrap items-center gap-x-1 gap-y-2 md:contents">
+          <%= nav_link_to "Employees", employees_path, "employees" %>
+          <%= nav_link_to "Exchange Rates", exchange_rates_path, "exchange_rates" %>
+          <%= nav_link_to "Dashboard", dashboard_path, "dashboard" %>
+        </div>
       </nav>
     </header>
 

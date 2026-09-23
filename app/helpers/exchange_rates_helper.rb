@@ -10,6 +10,6 @@ module ExchangeRatesHelper
     exact_time = exchange_rate.last_synced_at.to_fs(:long)
 
     tag.span("Synced #{time_ago_in_words(exchange_rate.last_synced_at)} ago",
-             class: "rate-value text-text-muted", title: exact_time, aria: { label: "Last synced #{exact_time}" })
+             class: "rate-value min-w-0 text-text-muted", title: exact_time, aria: { label: "Last synced #{exact_time}" })
   end
 end

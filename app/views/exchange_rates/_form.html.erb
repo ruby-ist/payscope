@@ -4,7 +4,7 @@
   Always pre-filled from the record (§9).
 %>
 <%= form_with model: exchange_rate, class: "rate-row text-sm" do |form| %>
-  <div class="rate-equation">
+  <div class="rate-equation w-full md:w-auto">
     <span class="rate-value numeric">1</span>
 
     <%= form.text_field :currency, autocomplete: "off",
@@ -20,7 +20,7 @@
     <span class="numeric text-text-muted">USD</span>
   </div>
 
-  <div class="flex flex-wrap items-center gap-2">
+  <div class="ml-auto flex flex-wrap items-center gap-2 md:ml-0">
     <%= form.button type: :submit, class: "btn-primary" do %>
       <%= icon_label "check", "Save" %>
     <% end %>

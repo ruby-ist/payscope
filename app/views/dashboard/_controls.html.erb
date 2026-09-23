@@ -4,7 +4,7 @@
 <%= form_with url: dashboard_path, method: :get, html: { autocomplete: "off" },
               data: { controller: "filters", turbo_frame: "salary_chart",
                       action: "change->filters#requestSubmit submit->filters#submit" },
-              class: "flex flex-wrap items-start justify-center gap-8" do %>
+              class: "flex flex-wrap items-start justify-start gap-8 md:justify-center" do %>
   <fieldset>
     <legend class="mb-2 text-sm uppercase tracking-wide text-text-muted">Group by</legend>
     <div class="segmented-control">
