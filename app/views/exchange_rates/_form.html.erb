@@ -5,7 +5,7 @@
 %>
 <%= form_with model: exchange_rate, class: "rate-row text-sm" do |form| %>
   <div class="rate-equation">
-    <span class="numeric">1</span>
+    <span class="rate-value numeric">1</span>
 
     <%= form.text_field :currency,
                         class: class_names("field numeric w-full", "field-error" => exchange_rate.errors[:currency].any?),

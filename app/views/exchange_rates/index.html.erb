@@ -1,7 +1,7 @@
 <h1 class="mb-4 text-2xl font-semibold text-nav-bg">Exchange Rates</h1>
 
 <%# No column headers: each row reads as its own sentence, "1 EUR = 0.900000 USD". %>
-<div class="max-w-3xl overflow-hidden rounded-md border border-border bg-surface">
+<div class="max-w-4xl overflow-hidden rounded-md border border-border bg-surface">
   <div id="exchange_rates" class="divide-y divide-border">
     <% @exchange_rates.each do |exchange_rate| %>
       <% editing = exchange_rate == @editing_exchange_rate %>

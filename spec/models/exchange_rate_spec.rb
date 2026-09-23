@@ -50,13 +50,19 @@ RSpec.describe ExchangeRate do
   end
 
   describe 'last_synced_at' do
+    context 'when creating a new exchange rate' do
+      let(:exchange_rate) { create(:exchange_rate) }
+
+      it 'defaults to the current time' do
+        expect(exchange_rate.last_synced_at).to be_within(1.second).of(Time.current)
+      end
+    end
+
     context 'when updating the rate value' do
       let!(:exchange_rate) { create(:exchange_rate, rate: 1.5) }
 
-      it 'does not set last_synced_at itself, leaving that to the recalculation job' do
-        exchange_rate.update(rate: 2.0)
-
-        expect(exchange_rate.last_synced_at).to be_nil
+      it 'does not change last_synced_at itself, leaving that to the recalculation job' do
+        expect { exchange_rate.update(rate: 2.0) }.not_to change(exchange_rate, :last_synced_at)
       end
     end
   end

@@ -64,4 +64,4 @@ Refer: `docs/plans/write_a_script_to_seed_the_database.md`
 
 ## 9. Code Optimization and Feature Improvements
 
-TBU
+Added an feature to perform money conversions on exchange rate listing page.

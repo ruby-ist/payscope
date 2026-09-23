@@ -1,9 +1,12 @@
 <div class="rate-row text-sm">
-  <p class="rate-equation">
-    <span class="numeric">1</span>
+  <p class="rate-equation" data-controller="rate-calculator"
+     data-rate-calculator-rate-value="<%= exchange_rate.rate %>">
+    <%= number_field_tag "amount", 1, id: dom_id(exchange_rate, "amount"), min: 0, step: "any", inputmode: "decimal",
+                         autocomplete: "off", class: "field numeric w-full", aria: { label: "Amount to convert" },
+                         data: { rate_calculator_target: "amount", action: "input->rate-calculator#calculate" } %>
     <span class="rate-value numeric"><%= exchange_rate.currency %></span>
     <span class="text-text-muted mx-6">=</span>
-    <span class="rate-value numeric"><%= formatted_rate(exchange_rate) %></span>
+    <span class="rate-value numeric overflow-x-auto whitespace-nowrap" data-rate-calculator-target="result"><%= formatted_rate(exchange_rate) %></span>
     <span class="numeric text-text-muted">USD</span>
   </p>
 

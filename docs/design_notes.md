@@ -166,13 +166,21 @@ Active state is **colour and weight only — no pill, no underline**:
 Each rate reads as a sentence rather than a row of columns, in both states:
 
 ```
-Display:  1  EUR   =  0.900000    USD    [✎ Edit]  [🗑 Delete]
-Edit:     1 [EUR ] =  [0.9      ] USD    [✓ Save]  [x Cancel]
+Display:  [1 ] EUR   =  0.900000    USD    [✎ Edit]  [🗑 Delete]
+Edit:       1 [EUR ] =  [0.9      ] USD    [✓ Save]  [x Cancel]
 ```
 
 `USD` is fixed as the base, matching `normalized_usd_salary` as the reporting metric. There are **no column headers** — each row describes itself. Displayed rates are formatted to 6 decimal places to match the column's `decimal(12,6)` scale; the input keeps the raw value so it stays easy to type over.
 
-**No layout shift on toggle.** `.rate-equation` is a 5-column grid with the currency and rate columns pinned to `calc(4ch + 1rem + 2px)` and `calc(12ch + 1rem + 2px)` — the §8 content widths plus the input's own padding and border. Display and edit share it. `.rate-value` additionally gives displayed values the same padding and a *transparent* border, so text sits exactly where the input's text sits; without it the equation jiggles on toggle even with the columns fixed.
+**No layout shift on toggle.** `.rate-equation` is a 5-column grid with the leading amount, currency and rate columns pinned to `calc(12ch + 1rem + 2px)`, `calc(4ch + 1rem + 2px)` and `calc(12ch + 1rem + 2px)` — the §8 content widths plus the input's own padding and border (the amount column matches the rate column's width, not the currency column's). Display and edit share it. `.rate-value` additionally gives displayed values the same padding and a *transparent* border, so text sits exactly where the input's text sits; without it the equation jiggles on toggle even with the columns fixed.
+
+**The leading `1` is a live multiplier, only in the display state.** Typing into it recomputes the right-hand side as `amount × rate` — `rate_calculator_controller.js` reads the row's raw rate off a data attribute and writes the formatted product straight into the result span. This never touches the persisted rate or hits the server; it's a convenience calculator, not an edit. The edit state's leading `1` stays the static, non-editable span it always was — only the base unit ever changes there, via the currency and rate inputs. That span still needs `.rate-value` (not just `.numeric`) even though it's never a real input: the display state's `1` became a real `.field`-bordered-and-padded input, so without `.rate-value` mirroring that box, the two states' `1`s share a column width but the *glyph* sits at different offsets within it.
+
+**The panel is `max-w-4xl`, wider than a typical card.** A full row — equation, "Synced … ago" label, and the Edit/Delete buttons — needs more horizontal space than the equation alone once the amount column matches the rate column's width; at `max-w-3xl` the synced label had nowhere left to sit and got crushed by `flex-wrap`.
+
+**The result scrolls rather than overflows.** Since the amount is user-typed, `amount × rate` can produce a number far wider than the fixed rate column — `overflow-x-auto whitespace-nowrap` on the result span turns that into a horizontal scroll within the column instead of spilling into neighbouring columns or forcing the grid to grow.
+
+**`autocomplete="off"` on the amount input.** Without it, browsers restore a previously typed amount on a plain page refresh — independent of Turbo entirely, so no server-side reset can fix it. The input always renders `value="1"` server-side; `autocomplete="off"` is what stops the browser from overriding that on reload.
 
 **The add form is not always present.** The `new_exchange_rate` frame holds *either* an "Add exchange rate" button or the form. `GET /exchange_rates/new` re-renders the index with that frame switched into its form state — the same approach row editing uses — so it degrades to a normal full-page navigation without JS. Creating a rate appends the row and swaps the button back.
 

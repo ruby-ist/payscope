@@ -14,6 +14,20 @@ RSpec.describe ExchangeRatesController do
       expect(response.body).to include(exchange_rate.currency)
     end
 
+    it 'renders a live amount-to-convert input for the rate' do
+      expect(response.body).to include(%(id="#{ActionView::RecordIdentifier.dom_id(exchange_rate, 'amount')}"))
+    end
+
+    it 'renders the amount-to-convert input starting at 1' do
+      input = Nokogiri::HTML(response.body).at_css("##{ActionView::RecordIdentifier.dom_id(exchange_rate, 'amount')}")
+      expect(input['value']).to eq('1')
+    end
+
+    it 'disables browser autocomplete on the amount-to-convert input, so a refresh cannot restore a stale value' do
+      input = Nokogiri::HTML(response.body).at_css("##{ActionView::RecordIdentifier.dom_id(exchange_rate, 'amount')}")
+      expect(input['autocomplete']).to eq('off')
+    end
+
     it 'offers the add button rather than the form' do
       expect(response.body).to include('Add exchange rate')
     end
@@ -155,6 +169,11 @@ RSpec.describe ExchangeRatesController do
 
       it 'updates the exchange rate' do
         expect(exchange_rate.reload.rate).to eq(2.5)
+      end
+
+      it 'resets the amount-to-convert input back to 1' do
+        input = Nokogiri::HTML(response.body).at_css("##{ActionView::RecordIdentifier.dom_id(exchange_rate, 'amount')}")
+        expect(input['value']).to eq('1')
       end
     end
 
