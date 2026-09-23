@@ -64,4 +64,4 @@ Refer: `docs/plans/write_a_script_to_seed_the_database.md`
 
 ## 9. Code Optimization and Feature Improvements
 
-Added an feature to perform money conversions on exchange rate listing page. Fixed the `ExchangeRate` deletion where it was failing with referencial integrity. Fixed the bug where `Employee` deletion was not updating the aggregation data.
+Added an feature to perform money conversions on exchange rate listing page. Fixed the `ExchangeRate` deletion where it was failing with referencial integrity. Fixed the bug where `Employee` deletion was not updating the aggregation data. Added hover title for salary `div` element to show normalized USD value. Turned off default HTML autocomplete for input fields with unique validation.

@@ -50,6 +50,11 @@ RSpec.describe ExchangeRatesController do
       expect(response.body).to include('name="exchange_rate[currency]"')
     end
 
+    it 'turns off autocomplete on the currency field' do
+      field = Nokogiri::HTML(response.body).at_css('input[name="exchange_rate[currency]"]')
+      expect(field['autocomplete']).to eq('off')
+    end
+
     it 'replaces the add button with the form' do
       expect(response.body).not_to include('Add exchange rate')
     end

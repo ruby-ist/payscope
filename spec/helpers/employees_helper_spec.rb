@@ -98,4 +98,24 @@ RSpec.describe EmployeesHelper do
       end
     end
   end
+
+  describe '#salary_div_title' do
+    subject(:salary_div_title) { helper.salary_div_title(employee) }
+
+    context 'when the salary has been normalized' do
+      let(:employee) { build(:employee, normalized_usd_salary: 76_500) }
+
+      it 'shows the normalized USD amount' do
+        expect(salary_div_title).to eq('76,500.00 USD')
+      end
+    end
+
+    context 'when the salary has not been normalized yet' do
+      let(:employee) { build(:employee, normalized_usd_salary: nil) }
+
+      it 'says so' do
+        expect(salary_div_title).to eq('Not yet normalized')
+      end
+    end
+  end
 end

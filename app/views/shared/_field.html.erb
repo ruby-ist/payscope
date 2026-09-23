@@ -19,5 +19,6 @@
 
   <%= form.text_field attribute,
                       class: class_names("field", width_class, "field-error" => errors.any?),
+                      autocomplete: local_assigns[:autocomplete],
                       aria: { invalid: errors.any?.presence, describedby: (error_id if errors.any?) } %>
 </div>

@@ -34,4 +34,10 @@ module EmployeesHelper
 
     "(showing #{number_with_delimiter(pagy.from)}–#{number_with_delimiter(pagy.to)})"
   end
+
+  def salary_div_title(employee)
+    return "Not yet normalized" if employee.normalized_usd_salary.nil?
+
+    "#{number_with_precision(employee.normalized_usd_salary, precision: 2, delimiter: ',')} USD"
+  end
 end

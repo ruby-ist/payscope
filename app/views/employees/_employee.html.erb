@@ -31,7 +31,8 @@
     <div class="min-w-0">
       <dt class="<%= label_classes %>">Salary</dt>
       <%# Flips to white on striped rows so the chip keeps standing off its row. %>
-      <dd class="mt-0.5 inline-block whitespace-nowrap rounded-md border border-border bg-bg px-2 py-1 group-even:bg-surface">
+      <dd class="mt-0.5 inline-block whitespace-nowrap rounded-md border border-border bg-bg px-2 py-1 group-even:bg-surface"
+          title="<%= salary_div_title(employee) %>">
         <span class="numeric"><%= number_with_precision employee.local_salary, precision: 2, delimiter: "," %></span><span class="numeric text-text-muted">&nbsp;<%= employee.currency %></span>
       </dd>
     </div>

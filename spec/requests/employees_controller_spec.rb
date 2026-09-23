@@ -22,6 +22,11 @@ RSpec.describe EmployeesController do
       it 'offers a working "New employee" link' do
         expect(response.body).to include(%(href="#{new_employee_path}"))
       end
+
+      it "titles the salary chip with the normalized USD amount" do
+        title = ApplicationController.helpers.salary_div_title(employee)
+        expect(response.body).to include(%(title="#{title}"))
+      end
     end
 
     context 'when there are no exchange rates yet' do
@@ -430,6 +435,11 @@ RSpec.describe EmployeesController do
 
     it 'renders the new employee form' do
       expect(response.body).to include('New Employee')
+    end
+
+    it 'turns off autocomplete on the employee code field' do
+      field = Nokogiri::HTML(response.body).at_css('#employee_employee_code')
+      expect(field['autocomplete']).to eq('off')
     end
   end
 

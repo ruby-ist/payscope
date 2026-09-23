@@ -7,7 +7,7 @@
   <div class="rate-equation">
     <span class="rate-value numeric">1</span>
 
-    <%= form.text_field :currency,
+    <%= form.text_field :currency, autocomplete: "off",
                         class: class_names("field numeric w-full", "field-error" => exchange_rate.errors[:currency].any?),
                         aria: { label: "Currency", invalid: exchange_rate.errors[:currency].any?.presence } %>
 

@@ -1,6 +1,7 @@
 <%= form_with model: employee, class: "max-w-2xl rounded-md border border-border bg-surface p-6" do |form| %>
   <div class="grid gap-5 sm:grid-cols-2">
-    <%= render "shared/field", form: form, attribute: :employee_code, label: "Employee code", width_class: "w-[10ch]" %>
+    <%= render "shared/field", form: form, attribute: :employee_code, label: "Employee code",
+                               width_class: "w-[10ch]", autocomplete: "off" %>
     <%= render "shared/field", form: form, attribute: :full_name, label: "Full name", width_class: "w-[28ch] max-w-full" %>
     <%= render "shared/field", form: form, attribute: :job_title, label: "Job title", width_class: "w-[28ch] max-w-full" %>
     <%= render "shared/field", form: form, attribute: :department, label: "Department", width_class: "w-[20ch] max-w-full" %>
