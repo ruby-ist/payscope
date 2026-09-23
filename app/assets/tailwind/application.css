@@ -105,14 +105,19 @@
      doesn't fit rather than clip the row. */
   .rate-equation {
     display: grid;
-    grid-template-columns: calc(8ch + 1rem + 2px) calc(4ch + 1rem + 2px) auto calc(8ch + 1rem + 2px) auto;
+    grid-template-columns:
+      calc(8ch + 1rem + 2px) calc(4ch + 1rem + 2px)
+      auto calc(8ch + 1rem + 2px) auto;
     align-items: center;
     gap: 0.5rem;
   }
 
-  @media (width >= 768px) { /* matches --breakpoint-md */
+  @media (width >= 768px) {
+    /* matches --breakpoint-md */
     .rate-equation {
-      grid-template-columns: calc(12ch + 1rem + 2px) calc(4ch + 1rem + 2px) auto calc(12ch + 1rem + 2px) auto;
+      grid-template-columns:
+        calc(12ch + 1rem + 2px) calc(4ch + 1rem + 2px)
+        auto calc(12ch + 1rem + 2px) auto;
     }
   }
 
@@ -136,5 +141,10 @@
 
   .segmented-control-input {
     @apply sr-only;
+  }
+
+  .turbo-progress-bar {
+    height: 3px;
+    background-color: #ff6f59 !important;
   }
 }

@@ -50,6 +50,10 @@ Delete is therefore never signalled by colour alone: outline styling, a trash ic
 
 §1's "two real hues" discipline and `destructive`-aliases-`primary-hover` both stop at the flash toast (§10). A toast is a status report shown *after* the action already happened, not another actionable control competing for the coral accent — red/green there reads as "succeeded/failed" the instant it appears, without reading the text. `--color-success` / `--color-error` are scoped to that one component; nothing else should reach for them.
 
+### Turbo's progress bar is themed too
+
+Turbo shows its own `.turbo-progress-bar` automatically on slow navigations; left unstyled it's an unbranded default blue. `application.css` overrides it to `--color-primary` — same coral as every other action — so a slow request still reads as "this app is working," not a generic browser artifact.
+
 ### Scope of the `nav-*` tokens
 
 The navbar is their home, with one sanctioned exception: page `<h1>`s use `text-nav-bg`, tying content headings to the navbar band.
