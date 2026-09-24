@@ -35,6 +35,10 @@ port ENV.fetch("PORT", 3000)
 plugin :tmp_restart
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments.
+# Async mode runs the dispatcher/worker/scheduler as threads in this same process
+# instead of forking separate child processes, to keep the memory footprint down
+# on low-memory instances.
+solid_queue_mode :async
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.

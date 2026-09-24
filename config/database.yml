@@ -91,5 +91,9 @@ test:
 production:
   adapter: cockroachdb
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 4 } %>
+  # With SOLID_QUEUE_IN_PUMA running in async mode, Puma's request threads and Solid
+  # Queue's worker/dispatcher/scheduler threads all share this single pool, so it needs
+  # its own budget independent of RAILS_MAX_THREADS (Puma threads + worker threads + 2 for
+  # the worker's polling/heartbeat + ~2 each for the dispatcher and scheduler).
+  max_connections: <%= ENV.fetch("DB_POOL_SIZE") { 10 } %>
   url: <%= ENV["DATABASE_URL"] %>
