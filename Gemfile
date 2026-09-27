@@ -20,7 +20,7 @@ gem "tailwindcss-rails"
 gem "pagy"
 
 # See the discussuion: [https://discuss.rubyonrails.org/t/internal-server-error-500-while-going-through-guide/91629/10]
-gem "json", "< 3.0.0"
+gem "json", "< 4.0.0"
 
 # No longer a default gem as of Ruby 3.4
 gem "csv"
