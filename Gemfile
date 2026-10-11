@@ -72,7 +72,7 @@ group :development, :test do
   gem "rspec-rails"
 
   # Use postgresql as the database for Active Record
-  gem "pg", "~> 1.1"
+  gem "pg", "~> 1.7"
 end
 
 group :test do
